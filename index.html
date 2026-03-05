@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bingo Virtual Pro - Sala Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- ✅ CORREGIDO: Eliminado el espacio en la URL de fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Pantalla de Login -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="logo-bingo">
+                <h1>🎰 BINGO VIRTUAL PRO</h1>
+                <div class="neon-text">PREMIUM EXPERIENCE</div>
+            </div>
+            
+            <div class="login-options">
+                <div class="login-box player-login">
+                    <h2>Jugador</h2>
+                    <input type="text" id="playerName" placeholder="Tu nombre" maxlength="20">
+                    <input type="text" id="roomCode" placeholder="Código de sala" maxlength="10">
+                    <button onclick="loginPlayer()" class="btn-primary">Entrar a la Sala</button>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="login-box admin-login">
+                    <h2>Administrador</h2>
+                    <input type="password" id="adminCode" placeholder="Código Admin" maxlength="10">
+                    <button onclick="loginAdmin()" class="btn-admin">Panel de Control</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sala de Juego (Jugador) -->
+    <div id="gameScreen" class="screen">
+        <div class="game-layout">
+            <!-- Header -->
+            <header class="game-header">
+                <div class="header-left">
+                    <div class="logo-small">BINGO PRO</div>
+                    <div class="room-info">Sala: <span id="roomIdDisplay">---</span></div>
+                </div>
+                <div class="header-center">
+                    <div class="current-number-display">
+                        <div class="number-ball" id="currentBall">
+                            <span id="currentNumber">--</span>
+                        </div>
+                        <div class="number-text" id="numberText">Esperando...</div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="jackpot-display">
+                        <div class="jackpot-label">POZO</div>
+                        <div class="jackpot-amount" id="jackpotAmount">$0</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="game-main">
+                <!-- Panel Izquierdo: Cartones -->
+                <div class="cards-panel">
+                    <div class="panel-header">
+                        <h3>Mis Cartones</h3>
+                        <button onclick="requestCard()" class="btn-request" id="btnRequestCard">Pedir Cartón</button>
+                    </div>
+                    <div class="cards-container" id="cardsContainer">
+                        <!-- Los cartones se generan dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Panel Central: Últimos Números -->
+                <div class="numbers-panel">
+                    <div class="last-numbers">
+                        <h3>Últimos Números</h3>
+                        <div class="numbers-grid" id="calledNumbers">
+                            <!-- Números llamados -->
+                        </div>
+                    </div>
+                    
+                    <div class="game-status">
+                        <div class="status-message" id="gameStatus">Esperando inicio...</div>
+                        <div class="countdown" id="countdown"></div>
+                    </div>
+                </div>
+
+                <!-- Panel Derecho: Chat -->
+                <div class="chat-panel">
+                    <div class="chat-header">
+                        <h3>💬 Chat</h3>
+                        <span class="online-count" id="onlineCount">0 online</span>
+                    </div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Escribe un mensaje..." maxlength="100" onkeypress="handleChatKey(event)">
+                        <button onclick="sendMessage()" class="btn-send">➤</button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer: Controles -->
+            <footer class="game-footer">
+                <button onclick="claimLine()" class="btn-claim" id="btnLine" disabled>🎯 CANTAR LÍNEA</button>
+                <button onclick="claimBingo()" class="btn-bingo" id="btnBingo" disabled>🏆 CANTAR BINGO</button>
+                <div class="volume-control">
+                    <span>🔊</span>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="80" onchange="changeVolume(this.value)">
+                </div>
+            </footer>
+        </div>
+
+        <!-- Modal Ganador -->
+        <div id="winnerModal" class="modal">
+            <div class="modal-content winner-content">
+                <div class="confetti-container" id="confetti"></div>
+                <h2 class="winner-title">🎉 ¡BINGO! 🎉</h2>
+                <div class="winner-info" id="winnerInfo"></div>
+                <div class="fireworks" id="fireworks"></div>
+            </div>
+        </div>
+
+        <!-- Modal Línea -->
+        <div id="lineModal" class="modal">
+            <div class="modal-content line-content">
+                <h2>🎯 ¡LÍNEA CANTADA!</h2>
+                <div id="lineWinners"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de Administración -->
+    <div id="adminScreen" class="screen">
+        <div class="admin-layout">
+            <!-- Sidebar -->
+            <aside class="admin-sidebar">
+                <div class="admin-logo">ADMIN PANEL</div>
+                <nav class="admin-nav">
+                    <button onclick="showAdminSection('game', this)" class="nav-btn active">🎮 Control Juego</button>
+                    <button onclick="showAdminSection('cards', this)" class="nav-btn">🎫 Cartones</button>
+                    <button onclick="showAdminSection('players', this)" class="nav-btn">👥 Jugadores</button>
+                    <button onclick="showAdminSection('settings', this)" class="nav-btn">⚙️ Configuración</button>
+                </nav>
+                <div class="admin-info">
+                    <div>Sala: <span id="adminRoomId">---</span></div>
+                    <button onclick="generateRoomLink()" class="btn-link">🔗 Generar Link</button>
+                    <button onclick="logout()" class="btn-logout">Salir</button>
+                </div>
+            </aside>
+
+            <!-- Main Admin -->
+            <main class="admin-main">
+                <!-- Sección Control Juego -->
+                <div id="section-game" class="admin-section active">
+                    <h2>Control del Juego</h2>
+                    
+                    <div class="control-grid">
+                        <div class="control-box">
+                            <h3>Estado del Juego</h3>
+                            <div class="game-state" id="adminGameState">DETENIDO</div>
+                            <div class="control-buttons">
+                                <button onclick="startCountdown()" class="btn-control btn-start">▶️ Iniciar Juego</button>
+                                <button onclick="pauseGame()" class="btn-control btn-pause">⏸️ Pausar</button>
+                                <button onclick="resetGame()" class="btn-control btn-reset">🔄 Reiniciar</button>
+                            </div>
+                            <div class="countdown-set">
+                                <label>Cuenta regresiva (seg):</label>
+                                <input type="number" id="countdownInput" value="30" min="5" max="300">
+                            </div>
+                        </div>
+
+                        <div class="control-box">
+                            <h3>Número Actual</h3>
+                            <div class="admin-current-number" id="adminCurrentNumber">--</div>
+                            <div class="number-controls">
+                                <button onclick="callNextNumberAuto()" class="btn-control">🎲 Automático</button>
+                                <div class="manual-input">
+                                    <input type="number" id="manualNumber" min="1" max="90" placeholder="1-90">
+                                    <button onclick="callManualNumber()">📢 Cantar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-box">
+                            <h3>Pozo y Premios</h3>
+                            <div class="jackpot-edit">
+                                <label>Tipo:</label>
+                                <select id="prizeType" onchange="updatePrizeType()">
+                                    <option value="money">Dinero ($)</option>
+                                    <option value="prize">Premio Físico</option>
+                                </select>
+                                <input type="text" id="prizeValue" placeholder="Monto o descripción">
+                                <button onclick="updateJackpot()" class="btn-save">💾 Guardar Pozo</button>
+                            </div>
+                            <div class="line-prize">
+                                <label>Premio Línea (% del pozo):</label>
+                                <input type="number" id="linePrizePercent" value="20" min="5" max="50">
+                            </div>
+                        </div>
+
+                        <div class="control-box">
+                            <h3>Música y Sonido</h3>
+                            <div class="music-controls">
+                                <input type="file" id="musicFile" accept="audio/*" onchange="loadMusic()">
+                                <button onclick="toggleMusic()" id="btnMusic" class="btn-control">🎵 Reproducir</button>
+                                <div class="volume-admin">
+                                    <label>Volumen General:</label>
+                                    <input type="range" id="adminVolume" min="0" max="100" value="80" onchange="setMasterVolume(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="winners-section">
+                        <h3>Ganadores Detectados</h3>
+                        <div class="winners-list" id="adminWinnersList">
+                            <p class="no-winners">Sin ganadores aún</p>
+                        </div>
+                        <div class="winner-actions">
+                            <button onclick="verifyWinners()" class="btn-verify">✅ Verificar Ganadores</button>
+                            <button onclick="distributePrizes()" class="btn-distribute">💰 Distribuir Premios</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección Cartones -->
+                <div id="section-cards" class="admin-section">
+                    <h2>Gestión de Cartones</h2>
+                    <div class="cards-management">
+                        <div class="assign-cards">
+                            <h3>Asignar Cartones</h3>
+                            <select id="playerSelect">
+                                <option value="">Seleccionar jugador...</option>
+                            </select>
+                            <input type="number" id="cardsToAssign" min="1" max="10" value="1" placeholder="Cantidad">
+                            <button onclick="assignCardsToPlayer()" class="btn-action">🎫 Asignar</button>
+                        </div>
+                        
+                        <div class="view-cards">
+                            <h3>Ver Cartones de Jugador</h3>
+                            <select id="viewPlayerSelect" onchange="viewPlayerCards()">
+                                <option value="">Seleccionar...</option>
+                            </select>
+                            <div id="adminCardsView" class="admin-cards-grid"></div>
+                        </div>
+
+                        <div class="all-cards">
+                            <h3>Todos los Cartones en Juego</h3>
+                            <div class="stats-cards">
+                                <div>Total cartones: <span id="totalCards">0</span></div>
+                                <div>Cartones activos: <span id="activeCards">0</span></div>
+                            </div>
+                            <button onclick="viewAllCards()" class="btn-action">👁️ Ver Todos</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección Jugadores -->
+                <div id="section-players" class="admin-section">
+                    <h2>Gestión de Jugadores</h2>
+                    <div class="players-table-container">
+                        <table class="players-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Cartones</th>
+                                    <th>Estado</th>
+                                    <th>Infracciones</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="playersTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="chat-admin">
+                        <h3>Chat Privado - Solicitudes</h3>
+                        <div class="admin-chat-box" id="adminChatBox"></div>
+                    </div>
+                </div>
+
+                <!-- Sección Configuración -->
+                <div id="section-settings" class="admin-section">
+                    <h2>Configuración de Sala</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>Nombre de la Sala:</label>
+                            <input type="text" id="roomName" value="Sala Principal">
+                        </div>
+                        <div class="setting-item">
+                            <label>Máximo de cartones por jugador:</label>
+                            <input type="number" id="maxCardsPerPlayer" value="6" min="1" max="20">
+                        </div>
+                        <div class="setting-item">
+                            <label>Máximo ganadores de línea simultáneos:</label>
+                            <input type="number" id="maxLineWinners" value="3" min="1" max="5">
+                        </div>
+                        <div class="setting-item">
+                            <label>Tiempo entre números (auto):</label>
+                            <input type="number" id="autoCallInterval" value="10" min="3" max="60">
+                        </div>
+                        <div class="setting-item">
+                            <label>Palabras prohibidas (separadas por coma):</label>
+                            <textarea id="bannedWords" rows="3">tonto,idiota,estupido,imbecil</textarea>
+                        </div>
+                        <button onclick="saveSettings()" class="btn-save-settings">💾 Guardar Configuración</button>
+                    </div>
+                </div>
+            </main>
+        </div> 
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
