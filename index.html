@@ -1,1261 +1,1651 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Bingo Online Profesional</title>
-
+<title>Bingo PRO</title>
 <link rel="stylesheet" href="style.css">
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.25.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.25.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.25.0/firebase-auth-compat.js"></script>
+
+<script>
+  // 🔹 Configuración de Firebase (poné tu propia config)
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_PROYECTO.firebaseapp.com",
+    databaseURL: "https://TU_PROYECTO.firebaseio.com",
+    projectId: "TU_PROYECTO",
+    storageBucket: "TU_PROYECTO.appspot.com",
+    messagingSenderId: "TU_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
+
+  // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
 </head>
-
 <body>
-
-<header id="mainHeader">
-
-<div class="logoContainer">
-<h1>BINGO ONLINE</h1>
-</div>
-
-<nav class="mainNav">
-
-<ul>
-
-<li>
-<a href="#sala">Sala</a>
-</li>
-
-<li>
-<a href="#cartones">Cartones</a>
-</li>
-
-<li>
-<a href="#chat">Chat</a>
-</li>
-
-<li>
-<a href="#estadisticas">Estadísticas</a>
-</li>
-
-<li>
-<a href="#admin">Admin</a>
-</li>
-
-</ul>
-
-</nav>
-
+<div id="app">
+<header class="header">
+  <h1 class="logo">🎱 BINGO PRO</h1>
+  <div class="jackpot">
+    <span>POZO</span>
+    <div id="jackpotAmount">$0</div>
+  </div>
 </header>
-
-<main id="mainContainer">
-<section id="loginSection">
-
-<div class="loginContainer">
-
-<h2>Ingresar a la sala</h2>
-
-<form id="loginForm">
-
-<div class="campo">
-
-<label>Nombre de jugador</label>
-
-<input 
-type="text"
-id="nombreJugador"
-placeholder="Tu nombre"
-required
->
-
-</div>
-
-<div class="campo">
-
-<label>Email</label>
-
-<input 
-type="email"
-id="emailJugador"
-placeholder="email@email.com"
-required
->
-
-</div>
-
-<div class="campo">
-
-<label>Contraseña</label>
-
-<input 
-type="password"
-id="passwordJugador"
-required
->
-
-</div>
-
-<button type="submit">
-Entrar al Bingo
-</button>
-
-</form>
-
-</div>
-
+<section class="loginScreen" id="loginScreen">
+  <h2>Ingresar a la sala</h2>
+  <input type="text" id="playerName" placeholder="Tu nombre">
+  <button id="enterGame">Entrar al Bingo</button>
 </section>
-<section id="salaSection">
 
-<h2>Sala de Juego</h2>
+<script>
+const enterBtn = document.getElementById('enterGame');
+enterBtn.addEventListener('click', () => {
+  const nombre = document.getElementById('playerName').value || "Jugador";
+  const playerRef = db.ref('jugadores/' + nombre);
+  playerRef.set({
+    nombre: nombre,
+    cartones: 0,
+    victorias: 0
+  });
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('gameScreen').style.display = 'block';
+});
+</script>
+<section class="gameScreen" id="gameScreen" style="display:none;">
+  <div class="topPanel">
+    <div class="currentNumberPanel">
+      <h3>Número actual</h3>
+      <div id="currentNumber">--</div>
+    </div>
+    <div class="countdownPanel">
+      <h3>Siguiente bola</h3>
+      <div id="countdownTimer">10</div>
+    </div>
+  </div>
 
-<div class="salaContainer">
+  <section class="ballMachine">
+    <div id="ballContainer">
+      <div class="ball" id="ballDisplay">--</div>
+    </div>
+    <button id="btnCantarNumero">Cantar Número</button>
+  </section>
 
-<div class="panelBolillero">
+  <section class="numbersHistory">
+    <h3>Números que salieron</h3>
+    <div id="numbersList"></div>
+  </section>
 
-<h3>Bolillero</h3>
+  <section class="cardsSection">
+    <h3>Tus Cartones</h3>
+    <button id="requestCard">Pedir Cartón</button>
+    <div id="cardsContainer"></div>
+  </section>
 
-<div id="numeroActual">
-00
-</div>
-
-<div id="bolillasCantadas">
-
-<span class="bola">1</span>
-<span class="bola">2</span>
-<span class="bola">3</span>
-<span class="bola">4</span>
-<span class="bola">5</span>
-
-</div>
-
-<button id="btnCantarNumero">
-Cantar Número
-</button>
-
-</div>
-<div class="panelPozo">
-
-<h3>Pozo acumulado</h3>
-
-<div class="pozoBox">
-
-<div class="pozoItem">
-
-<p>Pozo Principal</p>
-
-<span id="pozoPrincipal">
-$0
-</span>
-
-</div>
-
-<div class="pozoItem">
-
-<p>Premio Línea</p>
-
-<span id="premioLinea">
-$0
-</span>
-
-</div>
-
-<div class="pozoItem">
-
-<p>Premio Bingo</p>
-
-<span id="premioBingo">
-$0
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
+  <section class="chatSection">
+    <div class="chatHeader">
+      <h3>Chat</h3>
+    </div>
+    <div id="chatMessages"></div>
+    <div class="chatInput">
+      <input type="text" id="chatText" placeholder="Escribe mensaje">
+      <button id="sendChat">Enviar</button>
+    </div>
+  </section>
 </section>
+
+<script>
+// 🔹 Chat en tiempo real con Firebase
+const chatInput = document.getElementById('chatText');
+const sendBtn = document.getElementById('sendChat');
+const chatDiv = document.getElementById('chatMessages');
+
+sendBtn.addEventListener('click', () => {
+  const msg = chatInput.value.trim();
+  if(msg){
+    const newMsg = db.ref('chat').push();
+    newMsg.set({
+      nombre: document.getElementById('playerName').value || "Jugador",
+      mensaje: msg
+    });
+    chatInput.value = '';
+  }
+});
+
+// Escuchar cambios en chat
+db.ref('chat').on('child_added', snapshot => {
+  const data = snapshot.val();
+  const div = document.createElement('div');
+  div.classList.add('mensaje');
+  div.innerHTML = `<strong>${data.nombre}:</strong> ${data.mensaje}`;
+  chatDiv.appendChild(div);
+  chatDiv.scrollTop = chatDiv.scrollHeight;
+});
+</script>
 <section id="cartonesSection">
-
-<h2>Cartones</h2>
-
-<div id="cartonesContainer">
-
-<div class="carton">
-
-<div class="fila">
-
-<span>1</span>
-<span>16</span>
-<span>31</span>
-<span>46</span>
-<span>61</span>
-
-</div>
-
-<div class="fila">
-
-<span>2</span>
-<span>17</span>
-<span>32</span>
-<span>47</span>
-<span>62</span>
-
-</div>
-
-<div class="fila">
-
-<span>3</span>
-<span>18</span>
-<span>FREE</span>
-<span>48</span>
-<span>63</span>
-
-</div>
-
-<div class="fila">
-
-<span>4</span>
-<span>19</span>
-<span>34</span>
-<span>49</span>
-<span>64</span>
-
-</div>
-
-<div class="fila">
-
-<span>5</span>
-<span>20</span>
-<span>35</span>
-<span>50</span>
-<span>65</span>
-
-</div>
-
-</div>
-
-</div>
-
+  <h2>Cartones</h2>
+  <div id="cartonesContainer"></div>
 </section>
-<section id="chatSection">
 
-<h2>Chat de la sala</h2>
-
-<div id="chatContainer">
-
-<div id="chatMensajes">
-
-<div class="mensaje">
-<strong>Admin:</strong>
-Bienvenidos al Bingo
-</div>
-
-</div>
-
-<div class="chatInput">
-
-<input
-type="text"
-id="chatInput"
-placeholder="Escribe un mensaje"
->
-
-<button id="enviarMensaje">
-Enviar
-</button>
-
-</div>
-
-</div>
-
-</section>
 <section id="jugadoresSection">
-
-<h2>Jugadores</h2>
-
-<ul id="listaJugadores">
-
-<li class="jugador">
-Jugador 1
-</li>
-
-<li class="jugador">
-Jugador 2
-</li>
-
-<li class="jugador">
-Jugador 3
-</li>
-
-</ul>
-
+  <h2>Jugadores</h2>
+  <ul id="listaJugadores"></ul>
 </section>
+
+<script>
+// 🔹 Pedir cartón y guardarlo en Firebase
+const requestCardBtn = document.getElementById('requestCard');
+requestCardBtn.addEventListener('click', () => {
+  const nombre = document.getElementById('playerName').value || "Jugador";
+  const newCardRef = db.ref('cartones/' + nombre).push();
+  // Generar cartón simple
+  const carton = [];
+  for(let i=0;i<5;i++){
+    const fila = [];
+    for(let j=0;j<5;j++){
+      fila.push(Math.floor(Math.random()*75)+1);
+    }
+    carton.push(fila);
+  }
+  newCardRef.set({carton});
+});
+
+// 🔹 Escuchar jugadores en sala
+db.ref('jugadores').on('value', snapshot => {
+  const jugadores = snapshot.val() || {};
+  const lista = document.getElementById('listaJugadores');
+  lista.innerHTML = '';
+  Object.keys(jugadores).forEach(j => {
+    const li = document.createElement('li');
+    li.classList.add('jugador');
+    li.textContent = jugadores[j].nombre;
+    lista.appendChild(li);
+  });
+});
+</script>
 <section id="estadisticasSection">
-
-<h2>Estadísticas</h2>
-
-<div class="estadisticasContainer">
-
-<div class="statBox">
-
-<p>Partidas Jugadas</p>
-
-<span id="partidasJugadas">
-0
-</span>
-
-</div>
-
-<div class="statBox">
-
-<p>Jugadores Totales</p>
-
-<span id="jugadoresTotales">
-0
-</span>
-
-</div>
-
-<div class="statBox">
-
-<p>Premios Pagados</p>
-
-<span id="premiosPagados">
-$0
-</span>
-
-</div>
-
-</div>
-
+  <h2>Estadísticas</h2>
+  <div class="estadisticasContainer">
+    <div class="statBox">
+      <p>Partidas Jugadas</p>
+      <span id="partidasJugadas">0</span>
+    </div>
+    <div class="statBox">
+      <p>Jugadores Totales</p>
+      <span id="jugadoresTotales">0</span>
+    </div>
+    <div class="statBox">
+      <p>Premios Pagados</p>
+      <span id="premiosPagados">$0</span>
+    </div>
+  </div>
 </section>
+
+<script>
+// 🔹 Actualizar estadísticas en tiempo real
+db.ref('estadisticas').on('value', snapshot => {
+  const stats = snapshot.val() || { partidas:0, jugadores:0, premios:0 };
+  document.getElementById('partidasJugadas').textContent = stats.partidas;
+  document.getElementById('jugadoresTotales').textContent = stats.jugadores;
+  document.getElementById('premiosPagados').textContent = `$${stats.premios}`;
+});
+</script>
 <section id="adminSection">
-
-<h2>Panel Administrador</h2>
-
-<div class="adminPanel">
-
-<button id="iniciarJuego">
-Iniciar Juego
-</button>
-
-<button id="detenerJuego">
-Detener Juego
-</button>
-
-<button id="reiniciarJuego">
-Reiniciar
-</button>
-
-<button id="agregarPozo">
-Agregar Pozo
-</button>
-
-</div>
-
+  <h2>Panel Administrador</h2>
+  <div class="adminPanel">
+    <button id="iniciarJuego">Iniciar Juego</button>
+    <button id="detenerJuego">Detener Juego</button>
+    <button id="reiniciarJuego">Reiniciar</button>
+    <button id="agregarPozo">Agregar Pozo</button>
+  </div>
 </section>
-<footer id="mainFooter">
 
-<div class="footerContainer">
+<script>
+// 🔹 Funciones básicas admin
+const iniciarBtn = document.getElementById('iniciarJuego');
+const detenerBtn = document.getElementById('detenerJuego');
+const reiniciarBtn = document.getElementById('reiniciarJuego');
 
-<p>
-Bingo Online Profesional
-</p>
+iniciarBtn.addEventListener('click', () => {
+  db.ref('estadoJuego').set({activo:true});
+});
 
-<p>
-Sistema automático de bingo
-</p>
+detenerBtn.addEventListener('click', () => {
+  db.ref('estadoJuego').set({activo:false});
+});
 
-</div>
+reiniciarBtn.addEventListener('click', () => {
+  db.ref('estadoJuego').set({activo:false});
+  db.ref('bolas').set([]);
+  db.ref('estadisticas').set({partidas:0,jugadores:0,premios:0});
+});
+</script>
+<section id="panelPremios">
+  <h2>Premios Disponibles</h2>
+  <div class="premiosContainer">
+    <div class="premioItem">
+      <h3>Premio Línea</h3>
+      <p id="premioLineaValor">$0</p>
+    </div>
+    <div class="premioItem">
+      <h3>Premio Bingo</h3>
+      <p id="premioBingoValor">$0</p>
+    </div>
+    <div class="premioItem">
+      <h3>Pozo Acumulado</h3>
+      <p id="pozoAcumuladoValor">$0</p>
+    </div>
+  </div>
+</section>
 
-</footer>
+<script>
+// 🔹 Actualizar pozo y premios desde Firebase
+db.ref('premios').on('value', snapshot => {
+  const premios = snapshot.val() || { linea:0, bingo:0, pozo:0 };
+  document.getElementById('premioLineaValor').textContent = `$${premios.linea}`;
+  document.getElementById('premioBingoValor').textContent = `$${premios.bingo}`;
+  document.getElementById('pozoAcumuladoValor').textContent = `$${premios.pozo}`;
+});
 
-</main>
+const agregarPozoBtn = document.getElementById('agregarPozo');
+agregarPozoBtn.addEventListener('click', () => {
+  db.ref('premios/pozo').transaction(current => (current || 0) + 50);
+});
+</script>
+<section id="animacionBolillero">
+  <h2>Animación Bolillero</h2>
+  <div class="bolilleroAnimado" id="bolilleroAnimado"></div>
+</section>
 
-<script src="app.js"></script>
-
-</body>
-</html>
 <section id="numerosCantadosSection">
-
-<h2>Números Cantados</h2>
-
-<div id="tablaBingo">
-
-<div class="columnaB">
-<h3>B</h3>
-<span>1</span>
-<span>2</span>
-<span>3</span>
-<span>4</span>
-<span>5</span>
-<span>6</span>
-<span>7</span>
-<span>8</span>
-<span>9</span>
-<span>10</span>
-<span>11</span>
-<span>12</span>
-<span>13</span>
-<span>14</span>
-<span>15</span>
-</div>
-
-<div class="columnaI">
-<h3>I</h3>
-<span>16</span>
-<span>17</span>
-<span>18</span>
-<span>19</span>
-<span>20</span>
-<span>21</span>
-<span>22</span>
-<span>23</span>
-<span>24</span>
-<span>25</span>
-<span>26</span>
-<span>27</span>
-<span>28</span>
-<span>29</span>
-<span>30</span>
-</div>
-
-<div class="columnaN">
-<h3>N</h3>
-<span>31</span>
-<span>32</span>
-<span>33</span>
-<span>34</span>
-<span>35</span>
-<span>36</span>
-<span>37</span>
-<span>38</span>
-<span>39</span>
-<span>40</span>
-<span>41</span>
-<span>42</span>
-<span>43</span>
-<span>44</span>
-<span>45</span>
-</div>
-
-<div class="columnaG">
-<h3>G</h3>
-<span>46</span>
-<span>47</span>
-<span>48</span>
-<span>49</span>
-<span>50</span>
-<span>51</span>
-<span>52</span>
-<span>53</span>
-<span>54</span>
-<span>55</span>
-<span>56</span>
-<span>57</span>
-<span>58</span>
-<span>59</span>
-<span>60</span>
-</div>
-
-<div class="columnaO">
-<h3>O</h3>
-<span>61</span>
-<span>62</span>
-<span>63</span>
-<span>64</span>
-<span>65</span>
-<span>66</span>
-<span>67</span>
-<span>68</span>
-<span>69</span>
-<span>70</span>
-<span>71</span>
-<span>72</span>
-<span>73</span>
-<span>74</span>
-<span>75</span>
-</div>
-
-</div>
-
+  <h2>Números Cantados</h2>
+  <div id="tablaBingo">
+    <div class="columnaB" data-col="B"></div>
+    <div class="columnaI" data-col="I"></div>
+    <div class="columnaN" data-col="N"></div>
+    <div class="columnaG" data-col="G"></div>
+    <div class="columnaO" data-col="O"></div>
+  </div>
 </section>
+
+<script>
+// 🔹 Bolillero animado
+function cantarNumero() {
+  const numero = Math.floor(Math.random()*75)+1;
+  const bolillero = document.getElementById('bolilleroAnimado');
+  const bolaDiv = document.createElement('div');
+  bolaDiv.classList.add('bolaAnimada');
+  bolaDiv.textContent = numero;
+  bolillero.appendChild(bolaDiv);
+
+  // Guardar en Firebase
+  db.ref('bolas').push(numero);
+}
+
+// 🔹 Actualizar tabla de números cantados desde Firebase
+db.ref('bolas').on('child_added', snapshot => {
+  const numero = snapshot.val();
+  const col = numero <= 15 ? 'B' :
+              numero <= 30 ? 'I' :
+              numero <= 45 ? 'N' :
+              numero <= 60 ? 'G' : 'O';
+  const columna = document.querySelector(`[data-col="${col}"]`);
+  const span = document.createElement('span');
+  span.textContent = numero;
+  columna.appendChild(span);
+});
+</script>
 <section id="historialSection">
-
-<h2>Historial de números</h2>
-
-<div id="historialNumeros">
-
-<span class="historialNumero">12</span>
-<span class="historialNumero">45</span>
-<span class="historialNumero">30</span>
-<span class="historialNumero">71</span>
-<span class="historialNumero">8</span>
-<span class="historialNumero">19</span>
-<span class="historialNumero">64</span>
-
-</div>
-
+  <h2>Historial de números</h2>
+  <div id="historialNumeros"></div>
 </section>
+
+<script>
+// 🔹 Mostrar historial de números cantados
+db.ref('bolas').on('value', snapshot => {
+  const numeros = snapshot.val() || {};
+  const historialDiv = document.getElementById('historialNumeros');
+  historialDiv.innerHTML = '';
+  Object.values(numeros).forEach(num => {
+    const span = document.createElement('span');
+    span.classList.add('historialNumero');
+    span.textContent = num;
+    historialDiv.appendChild(span);
+  });
+});
+</script>
 <section id="rankingSection">
-
-<h2>Ranking de Ganadores</h2>
-
-<table id="tablaRanking">
-
-<thead>
-
-<tr>
-<th>Jugador</th>
-<th>Victorias</th>
-<th>Premios</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-<td>Jugador1</td>
-<td>5</td>
-<td>$500</td>
-</tr>
-
-<tr>
-<td>Jugador2</td>
-<td>3</td>
-<td>$300</td>
-</tr>
-
-<tr>
-<td>Jugador3</td>
-<td>2</td>
-<td>$200</td>
-</tr>
-
-</tbody>
-
-</table>
-
+  <h2>Ranking de Ganadores</h2>
+  <table id="tablaRanking">
+    <thead>
+      <tr>
+        <th>Jugador</th>
+        <th>Victorias</th>
+        <th>Premios</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </section>
-<section id="musicaSection">
 
-<h2>Música de la Sala</h2>
-
-<div class="musicControls">
-
-<button id="playMusic">
-Play
-</button>
-
-<button id="pauseMusic">
-Pause
-</button>
-
-<button id="stopMusic">
-Stop
-</button>
-
-</div>
-
-<audio id="bgMusic">
-
-<source src="music/bingo.mp3" type="audio/mpeg">
-
-</audio>
-
-</section>
-<section id="configuracionUsuario">
-
-<h2>Configuración</h2>
-
-<form id="configForm">
-
-<label>Color de cartón</label>
-
-<select id="colorCarton">
-
-<option>Azul</option>
-<option>Rojo</option>
-<option>Verde</option>
-<option>Dorado</option>
-
-</select>
-
-<label>Sonidos</label>
-
-<select id="sonidos">
-
-<option>Activados</option>
-<option>Desactivados</option>
-
-</select>
-
-<button type="submit">
-Guardar configuración
-</button>
-
-</form>
-
-</section>
-<section id="notificacionesSection">
-
-<h2>Notificaciones</h2>
-
-<div id="notificacionesContainer">
-
-<div class="notificacion">
-Jugador1 compró un cartón
-</div>
-
-<div class="notificacion">
-Comienza una nueva partida
-</div>
-
-<div class="notificacion">
-Pozo aumentado
-</div>
-
-</div>
-
-</section>
-<section id="compraCartonesSection">
-
-<h2>Comprar Cartones</h2>
-
-<div class="compraContainer">
-
-<div class="cartonCompra">
-
-<p>Cartón #101</p>
-
-<button class="btnComprarCarton">
-Comprar
-</button>
-
-</div>
-
-<div class="cartonCompra">
-
-<p>Cartón #102</p>
-
-<button class="btnComprarCarton">
-Comprar
-</button>
-
-</div>
-
-<div class="cartonCompra">
-
-<p>Cartón #103</p>
-
-<button class="btnComprarCarton">
-Comprar
-</button>
-
-</div>
-
-<div class="cartonCompra">
-
-<p>Cartón #104</p>
-
-<button class="btnComprarCarton">
-Comprar
-</button>
-
-</div>
-
-</div>
-
-</section>
-<section id="historialPartidasSection">
-
-<h2>Historial de Partidas</h2>
-
-<table class="tablaHistorial">
-
-<thead>
-
-<tr>
-<th>ID</th>
-<th>Ganador</th>
-<th>Premio</th>
-<th>Fecha</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-<td>1</td>
-<td>Jugador1</td>
-<td>$200</td>
-<td>01/03</td>
-</tr>
-
-<tr>
-<td>2</td>
-<td>Jugador5</td>
-<td>$300</td>
-<td>02/03</td>
-</tr>
-
-<tr>
-<td>3</td>
-<td>Jugador3</td>
-<td>$250</td>
-<td>03/03</td>
-</tr>
-
-</tbody>
-
-</table>
-
-</section>
+<script>
+// 🔹 Actualizar ranking desde Firebase
+db.ref('ranking').on('value', snapshot => {
+  const ranking = snapshot.val() || {};
+  const tbody = document.querySelector('#tablaRanking tbody');
+  tbody.innerHTML = '';
+  Object.keys(ranking).forEach(jugador => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${jugador}</td>
+      <td>${ranking[jugador].victorias}</td>
+      <td>$${ranking[jugador].premios}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+});
+</script>
 <section id="torneosSection">
-
-<h2>Torneos de Bingo</h2>
-
-<div class="torneosContainer">
-
-<div class="torneoBox">
-
-<h3>Torneo Nocturno</h3>
-
-<p>Premio: $1000</p>
-
-<button>
-Inscribirse
-</button>
-
-</div>
-
-<div class="torneoBox">
-
-<h3>Torneo Semanal</h3>
-
-<p>Premio: $5000</p>
-
-<button>
-Inscribirse
-</button>
-
-</div>
-
-</div>
-
+  <h2>Torneos de Bingo</h2>
+  <div class="torneosContainer" id="torneosContainer"></div>
 </section>
+
+<script>
+// 🔹 Cargar torneos desde Firebase
+db.ref('torneos').on('value', snapshot => {
+  const torneos = snapshot.val() || {};
+  const container = document.getElementById('torneosContainer');
+  container.innerHTML = '';
+  Object.keys(torneos).forEach(t => {
+    const box = document.createElement('div');
+    box.classList.add('torneoBox');
+    box.innerHTML = `
+      <h3>${torneos[t].nombre}</h3>
+      <p>Premio: $${torneos[t].premio}</p>
+      <button onclick="inscribirseTorneo('${t}')">Inscribirse</button>
+    `;
+    container.appendChild(box);
+  });
+});
+
+// 🔹 Función de inscripción
+function inscribirseTorneo(id) {
+  const nombre = document.getElementById('playerName').value || 'Jugador';
+  db.ref(`torneos/${id}/inscriptos/${nombre}`).set(true);
+  alert(`Te inscribiste al torneo ${id}`);
+}
+</script>
+<section id="pantallaGanadorSection">
+  <div class="pantallaGanador" id="pantallaGanador" style="display:none;">
+    <h1>¡¡BINGO!!</h1>
+    <p id="nombreGanador">Jugador</p>
+    <p class="premioGanador">Premio: $0</p>
+    <button id="cerrarPantallaGanador">Cerrar</button>
+  </div>
+</section>
+
+<script>
+db.ref('ganadorActual').on('value', snapshot => {
+  const ganador = snapshot.val();
+  if (ganador) {
+    document.getElementById('pantallaGanador').style.display = 'block';
+    document.getElementById('nombreGanador').textContent = ganador.nombre;
+    document.querySelector('.premioGanador').textContent = `Premio: $${ganador.premio}`;
+  }
+});
+
+document.getElementById('cerrarPantallaGanador').addEventListener('click', () => {
+  document.getElementById('pantallaGanador').style.display = 'none';
+});
+</script>
+<section id="sistemaNotificaciones">
+  <h2>Actividad en Sala</h2>
+  <div class="feedActividad" id="feedActividad"></div>
+</section>
+
+<script>
+// 🔹 Escuchar eventos de sala en Firebase
+db.ref('eventosSala').on('child_added', snapshot => {
+  const evento = snapshot.val();
+  const div = document.createElement('div');
+  div.classList.add('evento');
+  div.textContent = evento;
+  document.getElementById('feedActividad').prepend(div);
+});
+</script>
+<section id="soporteSection">
+  <h2>Soporte</h2>
+  <form id="formSoporte">
+    <label>Asunto</label>
+    <input type="text" placeholder="Problema o consulta" id="soporteAsunto">
+    <label>Mensaje</label>
+    <textarea rows="5" placeholder="Describe tu problema" id="soporteMensaje"></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+</section>
+
+<script>
+document.getElementById('formSoporte').addEventListener('submit', e => {
+  e.preventDefault();
+  const asunto = document.getElementById('soporteAsunto').value;
+  const mensaje = document.getElementById('soporteMensaje').value;
+  db.ref('soporte').push({ asunto, mensaje, fecha: Date.now() });
+  alert('Consulta enviada al soporte');
+  e.target.reset();
+});
+</script>
+<section id="perfilJugadorSection">
+  <h2>Perfil del Jugador</h2>
+  <div class="perfilContainer">
+    <div class="avatarJugador">
+      <img src="img/avatar.png" alt="avatar">
+    </div>
+    <div class="datosJugador">
+      <p>Nombre: <span id="perfilNombre">Jugador</span></p>
+      <p>Cartones Comprados: <span id="perfilCartones">0</span></p>
+      <p>Victorias: <span id="perfilVictorias">0</span></p>
+      <p>Premios Ganados: <span id="perfilPremios">$0</span></p>
+    </div>
+  </div>
+</section>
+
+<script>
+const playerRef = db.ref('jugadores/JugadorActual'); // Ajustar según login
+playerRef.on('value', snapshot => {
+  const data = snapshot.val() || {};
+  document.getElementById('perfilNombre').textContent = data.nombre || 'Jugador';
+  document.getElementById('perfilCartones').textContent = data.cartones || 0;
+  document.getElementById('perfilVictorias').textContent = data.victorias || 0;
+  document.getElementById('perfilPremios').textContent = `$${data.premios || 0}`;
+});
+</script>
+<section id="logrosSection">
+  <h2>Logros</h2>
+  <div class="logrosContainer" id="logrosContainer"></div>
+</section>
+
+<script>
+db.ref('logros/JugadorActual').on('value', snapshot => {
+  const logros = snapshot.val() || [];
+  const container = document.getElementById('logrosContainer');
+  container.innerHTML = '';
+  logros.forEach(l => {
+    const div = document.createElement('div');
+    div.classList.add('logroItem');
+    div.textContent = l;
+    container.appendChild(div);
+  });
+});
+</script>
+<section id="tiendaSection">
+  <h2>Tienda de Fichas</h2>
+  <div class="tiendaContainer" id="tiendaContainer"></div>
+</section>
+
+<script>
+const packs = [
+  { id: 'pack1', fichas: 100, precio: 5 },
+  { id: 'pack2', fichas: 500, precio: 20 },
+  { id: 'pack3', fichas: 1000, precio: 35 },
+];
+
+packs.forEach(p => {
+  const div = document.createElement('div');
+  div.classList.add('packFichas');
+  div.innerHTML = `
+    <p>${p.fichas} fichas</p>
+    <p>$${p.precio}</p>
+    <button onclick="comprarPack('${p.id}')">Comprar</button>
+  `;
+  document.getElementById('tiendaContainer').appendChild(div);
+});
+
+function comprarPack(id) {
+  db.ref(`jugadores/JugadorActual/fichas`).transaction(current => (current||0) + packs.find(p=>p.id===id).fichas);
+  alert('Pack comprado con éxito');
+}
+</script>
+<section id="moderacionSection">
+  <h2>Panel Moderación</h2>
+  <div class="moderacionContainer">
+    <button class="btnModeracion" onclick="moderar('silenciar')">Silenciar jugador</button>
+    <button class="btnModeracion" onclick="moderar('expulsar')">Expulsar jugador</button>
+    <button class="btnModeracion" onclick="moderar('bloquearChat')">Bloquear chat</button>
+    <button class="btnModeracion" onclick="moderar('reactivarChat')">Reactivar chat</button>
+  </div>
+</section>
+
+<script>
+function moderar(accion) {
+  db.ref('moderacion').push({ accion, fecha: Date.now() });
+  alert(`Acción realizada: ${accion}`);
+}
+</script>
+<section id="botsSection">
+  <h2>Control de Bots</h2>
+  <div class="botControl">
+    <button id="activarBots">Activar Bots</button>
+    <button id="desactivarBots">Desactivar Bots</button>
+  </div>
+</section>
+
+<script>
+document.getElementById('activarBots').addEventListener('click', () => {
+  db.ref('bots/estado').set('activo');
+  alert('Bots activados');
+});
+
+document.getElementById('desactivarBots').addEventListener('click', () => {
+  db.ref('bots/estado').set('inactivo');
+  alert('Bots desactivados');
+});
+</script>
+<section id="estadisticasAvanzadas">
+  <h2>Estadísticas Avanzadas</h2>
+  <div class="statsGrid">
+    <div class="statItem">
+      <p>Números Cantados</p>
+      <span id="numerosCantados">0</span>
+    </div>
+    <div class="statItem">
+      <p>Cartones Activos</p>
+      <span id="cartonesActivos">0</span>
+    </div>
+    <div class="statItem">
+      <p>Tiempo de Partida</p>
+      <span id="tiempoPartida">00:00</span>
+    </div>
+  </div>
+</section>
+
+<script>
+db.ref('estadisticas').on('value', snapshot => {
+  const stats = snapshot.val() || {};
+  document.getElementById('numerosCantados').textContent = stats.numerosCantados || 0;
+  document.getElementById('cartonesActivos').textContent = stats.cartonesActivos || 0;
+  document.getElementById('tiempoPartida').textContent = stats.tiempoPartida || '00:00';
+});
+</script>
+<section id="rankingSemanal">
+  <h2>Ranking Semanal</h2>
+  <ol class="rankingLista" id="rankingLista"></ol>
+</section>
+
+<script>
+db.ref('rankingSemanal').on('value', snapshot => {
+  const ranking = snapshot.val() || [];
+  const ol = document.getElementById('rankingLista');
+  ol.innerHTML = '';
+  ranking.forEach(j => {
+    const li = document.createElement('li');
+    li.textContent = `${j.nombre} - $${j.premio}`;
+    ol.appendChild(li);
+  });
+});
+</script>
+<section id="publicidadSection">
+  <h2>Promociones</h2>
+  <div class="promoContainer" id="promoContainer"></div>
+</section>
+
+<script>
+db.ref('promociones').on('value', snapshot => {
+  const promos = snapshot.val() || [];
+  const container = document.getElementById('promoContainer');
+  container.innerHTML = '';
+  promos.forEach(p => {
+    const div = document.createElement('div');
+    div.classList.add('promoItem');
+    div.textContent = p;
+    container.appendChild(div);
+  });
+});
+</script>
+<section id="configuracionSala">
+  <h2>Configuración Sala</h2>
+  <form id="configSalaForm">
+    <label>Precio Cartón</label>
+    <input type="number" id="precioCarton" value="1">
+    <label>Pozo Inicial</label>
+    <input type="number" id="pozoInicial" value="100">
+    <label>Tiempo entre números</label>
+    <input type="number" id="tiempoEntreNumeros" value="5">
+    <button type="submit">Guardar</button>
+  </form>
+</section>
+
+<script>
+document.getElementById('configSalaForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const config = {
+    precioCarton: parseInt(document.getElementById('precioCarton').value),
+    pozoInicial: parseInt(document.getElementById('pozoInicial').value),
+    tiempoEntreNumeros: parseInt(document.getElementById('tiempoEntreNumeros').value)
+  };
+  db.ref('configSala').set(config);
+  alert('Configuración guardada');
+});
+</script>
+<section id="pantallaEspera">
+  <h2>Esperando próxima partida</h2>
+  <div class="contadorInicio">
+    <span id="contadorPartida">30</span>
+    <p>segundos</p>
+  </div>
+</section>
+
+<script>
+db.ref('contadorPartida').on('value', snapshot => {
+  document.getElementById('contadorPartida').textContent = snapshot.val() || 30;
+});
+</script>
+<section id="panelPremios">
+  <h2>Premios Disponibles</h2>
+  <div class="premiosContainer">
+    <div class="premioItem">
+      <h3>Premio Línea</h3>
+      <p id="premioLineaValor">$0</p>
+    </div>
+    <div class="premioItem">
+      <h3>Premio Bingo</h3>
+      <p id="premioBingoValor">$0</p>
+    </div>
+    <div class="premioItem">
+      <h3>Pozo Acumulado</h3>
+      <p id="pozoAcumuladoValor">$0</p>
+    </div>
+  </div>
+</section>
+
+<script>
+db.ref('premios').on('value', snapshot => {
+  const premios = snapshot.val() || {};
+  document.getElementById('premioLineaValor').textContent = `$${premios.linea || 0}`;
+  document.getElementById('premioBingoValor').textContent = `$${premios.bingo || 0}`;
+  document.getElementById('pozoAcumuladoValor').textContent = `$${premios.pozo || 0}`;
+});
+</script>
+<section id="historialChat">
+  <h2>Historial del Chat</h2>
+  <div class="chatHistorialContainer" id="chatHistorialContainer"></div>
+</section>
+
+<script>
+db.ref('chat').on('value', snapshot => {
+  const mensajes = snapshot.val() || [];
+  const container = document.getElementById('chatHistorialContainer');
+  container.innerHTML = '';
+  mensajes.forEach(msg => {
+    const div = document.createElement('div');
+    div.classList.add('chatLinea');
+    div.innerHTML = `<span class="usuarioChat">${msg.usuario}:</span> <span class="mensajeChat">${msg.mensaje}</span>`;
+    container.appendChild(div);
+  });
+});
+</script>
+<section id="sistemaAmigos">
+  <h2>Amigos</h2>
+  <div class="amigosContainer" id="amigosContainer"></div>
+</section>
+
+<script>
+db.ref('usuarios').on('value', snapshot => {
+  const usuarios = snapshot.val() || [];
+  const container = document.getElementById('amigosContainer');
+  container.innerHTML = '';
+  usuarios.forEach(u => {
+    const div = document.createElement('div');
+    div.classList.add('amigoItem');
+    div.innerHTML = `<span>${u.nombre}</span> <button onclick="invitarAmigo('${u.id}')">Invitar</button>`;
+    container.appendChild(div);
+  });
+});
+
+function invitarAmigo(id) {
+  alert(`Invitación enviada a ${id}`);
+  db.ref(`invitaciones/${id}`).push({ de: 'JugadorActual', fecha: Date.now() });
+}
+</script>
+<section id="invitacionesSection">
+  <h2>Invitaciones</h2>
+  <div class="invitacionesContainer" id="invitacionesContainer"></div>
+</section>
+
+<script>
+db.ref('invitaciones/JugadorActual').on('value', snapshot => {
+  const invites = snapshot.val() || [];
+  const container = document.getElementById('invitacionesContainer');
+  container.innerHTML = '';
+  Object.keys(invites).forEach(key => {
+    const inv = invites[key];
+    const div = document.createElement('div');
+    div.classList.add('invitacionItem');
+    div.innerHTML = `<p>${inv.de} te invitó</p>
+                     <button onclick="aceptarInvitacion('${key}')">Aceptar</button>
+                     <button onclick="rechazarInvitacion('${key}')">Rechazar</button>`;
+    container.appendChild(div);
+  });
+});
+
+function aceptarInvitacion(id) {
+  db.ref(`invitaciones/JugadorActual/${id}`).remove();
+  alert('Invitación aceptada');
+}
+
+function rechazarInvitacion(id) {
+  db.ref(`invitaciones/JugadorActual/${id}`).remove();
+  alert('Invitación rechazada');
+}
+</script>
+<section id="lobbyPrincipal">
+  <h2>Lobby de Salas</h2>
+  <div class="salasContainer" id="salasContainer"></div>
+</section>
+
+<script>
+db.ref('salas').on('value', snapshot => {
+  const salas = snapshot.val() || [];
+  const container = document.getElementById('salasContainer');
+  container.innerHTML = '';
+  Object.keys(salas).forEach(key => {
+    const sala = salas[key];
+    const div = document.createElement('div');
+    div.classList.add('salaItem');
+    div.innerHTML = `<h3>${sala.nombre}</h3>
+                     <p>Jugadores: ${sala.jugadores.length} / ${sala.max}</p>
+                     <button onclick="entrarSala('${key}')">Entrar</button>`;
+    container.appendChild(div);
+  });
+});
+
+function entrarSala(id) {
+  alert(`Entrando a la sala ${id}`);
+}
+</script>
+<section id="pantallaGanadorSection">
+  <div class="pantallaGanador" id="pantallaGanador">
+    <h1>¡¡BINGO!!</h1>
+    <p id="nombreGanador">Jugador</p>
+    <p class="premioGanador">Premio: $0</p>
+    <button id="cerrarPantallaGanador">Cerrar</button>
+  </div>
+</section>
+
+<script>
+db.ref('ultimoGanador').on('value', snapshot => {
+  const ganador = snapshot.val();
+  if (ganador) {
+    document.getElementById('nombreGanador').textContent = ganador.nombre;
+    document.querySelector('.premioGanador').textContent = `Premio: $${ganador.premio}`;
+    document.getElementById('pantallaGanador').style.display = 'block';
+  }
+});
+
+document.getElementById('cerrarPantallaGanador').addEventListener('click', () => {
+  document.getElementById('pantallaGanador').style.display = 'none';
+});
+</script>
+<section id="soporteSection">
+  <h2>Soporte</h2>
+  <form id="formSoporte">
+    <label>Asunto</label>
+    <input type="text" placeholder="Problema o consulta" id="asuntoSoporte">
+    <label>Mensaje</label>
+    <textarea rows="5" placeholder="Describe tu problema" id="mensajeSoporte"></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+</section>
+
+<script>
+document.getElementById('formSoporte').addEventListener('submit', e => {
+  e.preventDefault();
+  const asunto = document.getElementById('asuntoSoporte').value;
+  const mensaje = document.getElementById('mensajeSoporte').value;
+  db.ref('soporte').push({ jugador: 'JugadorActual', asunto, mensaje, fecha: Date.now() });
+  alert('Mensaje enviado al soporte');
+});
+</script>
+<section id="perfilJugadorSection">
+  <h2>Perfil del Jugador</h2>
+  <div class="perfilContainer">
+    <div class="avatarJugador">
+      <img src="img/avatar.png" alt="avatar">
+    </div>
+    <div class="datosJugador">
+      <p>Nombre: <span id="perfilNombre">Jugador</span></p>
+      <p>Cartones Comprados: <span id="perfilCartones">0</span></p>
+      <p>Victorias: <span id="perfilVictorias">0</span></p>
+      <p>Premios Ganados: <span id="perfilPremios">$0</span></p>
+    </div>
+  </div>
+</section>
+
+<script>
+db.ref('jugadores/JugadorActual').on('value', snapshot => {
+  const data = snapshot.val() || {};
+  document.getElementById('perfilNombre').textContent = data.nombre || 'Jugador';
+  document.getElementById('perfilCartones').textContent = data.cartones || 0;
+  document.getElementById('perfilVictorias').textContent = data.victorias || 0;
+  document.getElementById('perfilPremios').textContent = `$${data.premios || 0}`;
+});
+</script>
+<section id="logrosSection">
+  <h2>Logros</h2>
+  <div class="logrosContainer" id="logrosContainer"></div>
+</section>
+
+<script>
+db.ref('jugadores/JugadorActual/logros').on('value', snapshot => {
+  const logros = snapshot.val() || [];
+  const container = document.getElementById('logrosContainer');
+  container.innerHTML = '';
+  logros.forEach(l => {
+    const div = document.createElement('div');
+    div.classList.add('logroItem');
+    div.textContent = l;
+    container.appendChild(div);
+  });
+});
+</script>
+<section id="tiendaSection">
+  <h2>Tienda de Fichas</h2>
+  <div class="tiendaContainer" id="tiendaContainer"></div>
+</section>
+
+<script>
+const packs = [
+  { fichas: 100, precio: 5 },
+  { fichas: 500, precio: 20 },
+  { fichas: 1000, precio: 35 }
+];
+const tiendaContainer = document.getElementById('tiendaContainer');
+packs.forEach(pack => {
+  const div = document.createElement('div');
+  div.classList.add('packFichas');
+  div.innerHTML = `<p>${pack.fichas} fichas</p><p>$${pack.precio}</p><button onclick="comprarPack(${pack.fichas},${pack.precio})">Comprar</button>`;
+  tiendaContainer.appendChild(div);
+});
+
+function comprarPack(fichas, precio) {
+  db.ref(`jugadores/JugadorActual/fichas`).transaction(current => (current || 0) + fichas);
+  alert(`Compraste ${fichas} fichas por $${precio}`);
+}
+</script>
+<section id="moderacionSection">
+  <h2>Panel Moderación</h2>
+  <div class="moderacionContainer">
+    <button class="btnModeracion" onclick="silenciarJugador()">Silenciar jugador</button>
+    <button class="btnModeracion" onclick="expulsarJugador()">Expulsar jugador</button>
+    <button class="btnModeracion" onclick="bloquearChat()">Bloquear chat</button>
+    <button class="btnModeracion" onclick="reactivarChat()">Reactivar chat</button>
+  </div>
+</section>
+
+<script>
+function silenciarJugador() { alert('Jugador silenciado'); }
+function expulsarJugador() { alert('Jugador expulsado'); }
+function bloquearChat() { db.ref('chatBloqueado').set(true); alert('Chat bloqueado'); }
+function reactivarChat() { db.ref('chatBloqueado').set(false); alert('Chat reactivado'); }
+</script>
+<!-- ===== MÚSICA DE LA SALA ===== -->
+<section id="musicaSection">
+  <h2>Música de la Sala</h2>
+  <div class="musicControls">
+    <button id="playMusic">Play</button>
+    <button id="pauseMusic">Pause</button>
+    <button id="stopMusic">Stop</button>
+  </div>
+  <audio id="bgMusic">
+    <source src="music/bingo.mp3" type="audio/mpeg">
+  </audio>
+</section>
+
+<!-- ===== CONFIGURACIÓN DE USUARIO ===== -->
+<section id="configuracionUsuario">
+  <h2>Configuración</h2>
+  <form id="configForm">
+    <label>Color de cartón</label>
+    <select id="colorCarton">
+      <option>Azul</option>
+      <option>Rojo</option>
+      <option>Verde</option>
+      <option>Dorado</option>
+    </select>
+
+    <label>Sonidos</label>
+    <select id="sonidos">
+      <option>Activados</option>
+      <option>Desactivados</option>
+    </select>
+
+    <button type="submit">Guardar configuración</button>
+  </form>
+</section>
+
+<!-- ===== NOTIFICACIONES ===== -->
+<section id="notificacionesSection">
+  <h2>Notificaciones</h2>
+  <div id="notificacionesContainer">
+    <!-- Firebase renderiza aquí los eventos -->
+  </div>
+</section>
+
+<!-- ===== COMPRA DE CARTONES ===== -->
+<section id="compraCartonesSection">
+  <h2>Comprar Cartones</h2>
+  <div class="compraContainer">
+    <div class="cartonCompra">
+      <p>Cartón #101</p>
+      <button class="btnComprarCarton" data-carton="101">Comprar</button>
+    </div>
+    <div class="cartonCompra">
+      <p>Cartón #102</p>
+      <button class="btnComprarCarton" data-carton="102">Comprar</button>
+    </div>
+    <div class="cartonCompra">
+      <p>Cartón #103</p>
+      <button class="btnComprarCarton" data-carton="103">Comprar</button>
+    </div>
+    <div class="cartonCompra">
+      <p>Cartón #104</p>
+      <button class="btnComprarCarton" data-carton="104">Comprar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HISTORIAL DE PARTIDAS ===== -->
+<section id="historialPartidasSection">
+  <h2>Historial de Partidas</h2>
+  <table class="tablaHistorial">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ganador</th>
+        <th>Premio</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody id="historialFirebase">
+      <!-- Firebase inserta partidas aquí -->
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== TORNEOS DE BINGO ===== -->
+<section id="torneosSection">
+  <h2>Torneos de Bingo</h2>
+  <div class="torneosContainer" id="torneosFirebase">
+    <!-- Firebase renderiza torneos dinámicamente -->
+  </div>
+</section>
+
+<!-- ===== LISTA DE ESPERA ===== -->
 <section id="listaEsperaSection">
+  <h2>Lista de Espera</h2>
+  <ul class="listaEspera" id="listaEsperaFirebase">
+    <!-- Jugadores en espera vía Firebase -->
+  </ul>
+</section>
 
-<h2>Lista de Espera</h2>
+<!-- ===== PANEL FINANCIERO ADMIN ===== -->
+<section id="panelFinancieroAdmin">
+  <h2>Panel Financiero</h2>
+  <div class="finanzasContainer">
+    <div class="finanzaBox">
+      <p>Total Recaudado</p>
+      <span id="recaudadoTotal">$0</span>
+    </div>
+    <div class="finanzaBox">
+      <p>Total Pagado</p>
+      <span id="pagadoTotal">$0</span>
+    </div>
+    <div class="finanzaBox">
+      <p>Ganancia</p>
+      <span id="gananciaTotal">$0</span>
+    </div>
+  </div>
+</section>
 
-<ul class="listaEspera">
+<!-- ===== ANIMACIÓN DEL BOLILLERO ===== -->
+<section id="animacionBolillero">
+  <h2>Animación Bolillero</h2>
+  <div class="bolilleroAnimado" id="bolilleroFirebase">
+    <!-- Firebase actualiza bolas animadas aquí -->
+  </div>
+</section>
 
-<li>Jugador21</li>
-<li>Jugador22</li>
-<li>Jugador23</li>
-<li>Jugador24</li>
-<li>Jugador25</li>
+<!-- ===== NÚMEROS CANTADOS ===== -->
+<section id="numerosCantadosSection">
+  <h2>Números Cantados</h2>
+  <div id="tablaBingoFirebase">
+    <!-- Los números cantados se muestran en tiempo real desde Firebase -->
+  </div>
+</section>
+<!-- ===== ESTADÍSTICAS AVANZADAS ===== -->
+<section id="estadisticasAvanzadas">
+  <h2>Estadísticas Avanzadas</h2>
+  <div class="statsGrid" id="estadisticasFirebase">
+    <div class="statItem">
+      <p>Números Cantados</p>
+      <span id="numerosCantados">0</span>
+    </div>
+    <div class="statItem">
+      <p>Cartones Activos</p>
+      <span id="cartonesActivos">0</span>
+    </div>
+    <div class="statItem">
+      <p>Tiempo de Partida</p>
+      <span id="tiempoPartida">00:00</span>
+    </div>
+  </div>
+</section>
 
-</ul>
+<!-- ===== RANKING SEMANAL ===== -->
+<section id="rankingSemanal">
+  <h2>Ranking Semanal</h2>
+  <ol class="rankingLista" id="rankingFirebase">
+    <li>Jugador1 - $500</li>
+    <li>Jugador2 - $400</li>
+    <li>Jugador3 - $300</li>
+    <li>Jugador4 - $200</li>
+    <li>Jugador5 - $100</li>
+  </ol>
+</section>
 
+<!-- ===== PUBLICIDAD / PROMOCIONES ===== -->
+<section id="publicidadSection">
+  <h2>Promociones</h2>
+  <div class="promoContainer" id="promocionesFirebase">
+    <div class="promoItem">2x1 en cartones viernes</div>
+    <div class="promoItem">Pozo doble sábado</div>
+    <div class="promoItem">Bingo especial domingo</div>
+  </div>
+</section>
+
+<!-- ===== CONFIGURACIÓN DE SALA ===== -->
+<section id="configuracionSala">
+  <h2>Configuración Sala</h2>
+  <form id="configSalaFormFirebase">
+    <label>Precio Cartón</label>
+    <input type="number" value="1">
+
+    <label>Pozo Inicial</label>
+    <input type="number" value="100">
+
+    <label>Tiempo entre números</label>
+    <input type="number" value="5">
+
+    <button type="submit">Guardar</button>
+  </form>
+</section>
+
+<!-- ===== PANTALLA DE ESPERA ===== -->
+<section id="pantallaEspera">
+  <h2>Esperando próxima partida</h2>
+  <div class="contadorInicio" id="contadorFirebase">
+    <span id="contadorPartida">30</span>
+    <p>segundos</p>
+  </div>
+</section>
+<!-- ===== PANEL DE PREMIOS ===== -->
+<section id="panelPremios">
+  <h2>Premios Disponibles</h2>
+  <div class="premiosContainer" id="premiosFirebase">
+    <div class="premioItem">
+      <h3>Premio Línea</h3>
+      <p id="premioLineaValor">$0</p>
+    </div>
+    <div class="premioItem">
+      <h3>Premio Bingo</h3>
+      <p id="premioBingoValor">$0</p>
+    </div>
+    <div class="premioItem">
+      <h3>Pozo Acumulado</h3>
+      <p id="pozoAcumuladoValor">$0</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HISTORIAL DEL CHAT ===== -->
+<section id="historialChat">
+  <h2>Historial del Chat</h2>
+  <div class="chatHistorialContainer" id="chatHistorialFirebase">
+    <div class="chatLinea">
+      <span class="usuarioChat">Jugador1:</span>
+      <span class="mensajeChat">Suerte a todos!</span>
+    </div>
+    <div class="chatLinea">
+      <span class="usuarioChat">Jugador2:</span>
+      <span class="mensajeChat">Vamos bingo!</span>
+    </div>
+    <div class="chatLinea">
+      <span class="usuarioChat">Admin:</span>
+      <span class="mensajeChat">Comienza la partida</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SISTEMA DE AMIGOS ===== -->
+<section id="sistemaAmigos">
+  <h2>Amigos</h2>
+  <div class="amigosContainer" id="amigosFirebase">
+    <div class="amigoItem">
+      <span>Jugador5</span>
+      <button>Invitar</button>
+    </div>
+    <div class="amigoItem">
+      <span>Jugador6</span>
+      <button>Invitar</button>
+    </div>
+    <div class="amigoItem">
+      <span>Jugador7</span>
+      <button>Invitar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INVITACIONES ===== -->
+<section id="invitacionesSection">
+  <h2>Invitaciones</h2>
+  <div class="invitacionesContainer" id="invitacionesFirebase">
+    <div class="invitacionItem">
+      <p>Jugador8 te invitó a una sala</p>
+      <button>Aceptar</button>
+      <button>Rechazar</button>
+    </div>
+    <div class="invitacionItem">
+      <p>Jugador9 te invitó a un torneo</p>
+      <button>Aceptar</button>
+      <button>Rechazar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LOBBY PRINCIPAL ===== -->
+<section id="lobbyPrincipal">
+  <h2>Lobby de Salas</h2>
+  <div class="salasContainer" id="lobbyFirebase">
+    <div class="salaItem">
+      <h3>Sala Rápida</h3>
+      <p>Jugadores: 12 / 30</p>
+      <button>Entrar</button>
+    </div>
+    <div class="salaItem">
+      <h3>Sala Clásica</h3>
+      <p>Jugadores: 20 / 50</p>
+      <button>Entrar</button>
+    </div>
+    <div class="salaItem">
+      <h3>Sala VIP</h3>
+      <p>Jugadores: 5 / 20</p>
+      <button>Entrar</button>
+    </div>
+  </div>
+</section>
+<!-- ===== SOPORTE ===== -->
+<section id="soporteSection">
+  <h2>Soporte</h2>
+  <form id="formSoporteFirebase">
+    <label>Asunto</label>
+    <input type="text" placeholder="Problema o consulta" required>
+    <label>Mensaje</label>
+    <textarea rows="5" placeholder="Describe tu problema" required></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+</section>
+
+<!-- ===== PERFIL DEL JUGADOR ===== -->
+<section id="perfilJugadorSection">
+  <h2>Perfil del Jugador</h2>
+  <div class="perfilContainer" id="perfilFirebase">
+    <div class="avatarJugador">
+      <img src="img/avatar.png" alt="avatar">
+    </div>
+    <div class="datosJugador">
+      <p>Nombre: <span id="perfilNombre">Jugador</span></p>
+      <p>Cartones Comprados: <span id="perfilCartones">0</span></p>
+      <p>Victorias: <span id="perfilVictorias">0</span></p>
+      <p>Premios Ganados: <span id="perfilPremios">$0</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LOGROS ===== -->
+<section id="logrosSection">
+  <h2>Logros</h2>
+  <div class="logrosContainer" id="logrosFirebase">
+    <div class="logroItem">🏆 Primer Bingo</div>
+    <div class="logroItem">🎯 10 partidas jugadas</div>
+    <div class="logroItem">💰 Ganador del día</div>
+    <div class="logroItem">⭐ Jugador frecuente</div>
+  </div>
+</section>
+
+<!-- ===== TIENDA DE CARTONES ===== -->
+<section id="tiendaSection">
+  <h2>Tienda de Cartones</h2>
+  <div class="tiendaContainer" id="tiendaFirebase">
+    <div class="packCarton">
+      <p>1 Cartón</p>
+      <p>$1</p>
+      <button>Comprar</button>
+    </div>
+    <div class="packCarton">
+      <p>5 Cartones</p>
+      <p>$4</p>
+      <button>Comprar</button>
+    </div>
+    <div class="packCarton">
+      <p>10 Cartones</p>
+      <p>$7</p>
+      <button>Comprar</button>
+    </div>
+  </div>
+</section>
+<!-- ===== PANEL MODERACIÓN ===== -->
+<section id="moderacionSection">
+  <h2>Panel Moderación</h2>
+  <div class="moderacionContainer" id="moderacionFirebase">
+    <button class="btnModeracion" data-accion="silenciar">Silenciar jugador</button>
+    <button class="btnModeracion" data-accion="expulsar">Expulsar jugador</button>
+    <button class="btnModeracion" data-accion="bloquearChat">Bloquear chat</button>
+    <button class="btnModeracion" data-accion="reactivarChat">Reactivar chat</button>
+  </div>
+</section>
+
+<!-- ===== CONTROL DE BOTS ===== -->
+<section id="botsSection">
+  <h2>Control de Bots</h2>
+  <div class="botControl" id="botsFirebase">
+    <button id="activarBots">Activar Bots</button>
+    <button id="desactivarBots">Desactivar Bots</button>
+  </div>
+</section>
+
+<!-- ===== ESTADÍSTICAS AVANZADAS ===== -->
+<section id="estadisticasAvanzadas">
+  <h2>Estadísticas Avanzadas</h2>
+  <div class="statsGrid" id="estadisticasFirebase">
+    <div class="statItem">
+      <p>Números Cantados</p>
+      <span id="numerosCantados">0</span>
+    </div>
+    <div class="statItem">
+      <p>Cartones Activos</p>
+      <span id="cartonesActivos">0</span>
+    </div>
+    <div class="statItem">
+      <p>Tiempo de Partida</p>
+      <span id="tiempoPartida">00:00</span>
+    </div>
+  </div>
+</section>
+<!-- ===== RANKING SEMANAL ===== -->
+<section id="rankingSemanal">
+  <h2>Ranking Semanal</h2>
+  <ol class="rankingLista" id="rankingSemanalFirebase">
+    <li>Jugador1 - $500</li>
+    <li>Jugador2 - $400</li>
+    <li>Jugador3 - $300</li>
+    <li>Jugador4 - $200</li>
+    <li>Jugador5 - $100</li>
+  </ol>
+</section>
+
+<!-- ===== PROMOCIONES / PUBLICIDAD ===== -->
+<section id="publicidadSection">
+  <h2>Promociones</h2>
+  <div class="promoContainer" id="promocionesFirebase">
+    <div class="promoItem">2x1 en cartones viernes</div>
+    <div class="promoItem">Pozo doble sábado</div>
+    <div class="promoItem">Bingo especial domingo</div>
+  </div>
+</section>
+
+<!-- ===== CONFIGURACIÓN DE SALA ===== -->
+<section id="configuracionSala">
+  <h2>Configuración Sala</h2>
+  <form id="configSalaFormFirebase">
+    <label>Precio Cartón</label>
+    <input type="number" id="precioCarton" value="1">
+
+    <label>Pozo Inicial</label>
+    <input type="number" id="pozoInicial" value="100">
+
+    <label>Tiempo entre números (segundos)</label>
+    <input type="number" id="tiempoEntreNumeros" value="5">
+
+    <button type="submit">Guardar</button>
+  </form>
+</section>
+
+<!-- ===== PANTALLA DE ESPERA ===== -->
+<section id="pantallaEspera">
+  <h2>Esperando próxima partida</h2>
+  <div class="contadorInicio">
+    <span id="contadorPartidaFirebase">30</span>
+    <p>segundos</p>
+  </div>
 </section>
 <section id="panelFinancieroAdmin">
-
-<h2>Panel Financiero</h2>
-
-<div class="finanzasContainer">
-
-<div class="finanzaBox">
-
-<p>Total Recaudado</p>
-
-<span id="recaudadoTotal">
-$0
-</span>
-
-</div>
-
-<div class="finanzaBox">
-
-<p>Total Pagado</p>
-
-<span id="pagadoTotal">
-$0
-</span>
-
-</div>
-
-<div class="finanzaBox">
-
-<p>Ganancia</p>
-
-<span id="gananciaTotal">
-$0
-</span>
-
-</div>
-
-</div>
-
+  <h2>Panel Financiero</h2>
+  <div class="finanzasContainer">
+    <div class="finanzaBox">
+      <p>Total Recaudado</p>
+      <span id="recaudadoTotal">$0</span>
+    </div>
+    <div class="finanzaBox">
+      <p>Total Pagado</p>
+      <span id="pagadoTotal">$0</span>
+    </div>
+    <div class="finanzaBox">
+      <p>Ganancia</p>
+      <span id="gananciaTotal">$0</span>
+    </div>
+  </div>
 </section>
-<section id="animacionBolillero">
 
-<h2>Animación Bolillero</h2>
-
-<div class="bolilleroAnimado">
-
-<div class="bolaAnimada">1</div>
-<div class="bolaAnimada">2</div>
-<div class="bolaAnimada">3</div>
-<div class="bolaAnimada">4</div>
-<div class="bolaAnimada">5</div>
-
-</div>
-
-</section>
-<section id="pantallaGanadorSection">
-
-<div class="pantallaGanador">
-
-<h1>¡¡BINGO!!</h1>
-
-<p id="nombreGanador">
-Jugador
-</p>
-
-<p class="premioGanador">
-Premio: $0
-</p>
-
-<button id="cerrarPantallaGanador">
-Cerrar
-</button>
-
-</div>
-
-</section>
-<section id="sistemaNotificaciones">
-
-<h2>Actividad en Sala</h2>
-
-<div class="feedActividad">
-
-<div class="evento">
-Jugador1 compró cartón
-</div>
-
-<div class="evento">
-Número cantado: 45
-</div>
-
-<div class="evento">
-Jugador3 hizo línea
-</div>
-
-</div>
-
-</section>
-<section id="soporteSection">
-
-<h2>Soporte</h2>
-
-<form id="formSoporte">
-
-<label>Asunto</label>
-
-<input
-type="text"
-placeholder="Problema o consulta"
->
-
-<label>Mensaje</label>
-
-<textarea
-rows="5"
-placeholder="Describe tu problema"
-></textarea>
-
-<button type="submit">
-Enviar
-</button>
-
-</form>
-
-</section>
-<section id="perfilJugadorSection">
-
-<h2>Perfil del Jugador</h2>
-
-<div class="perfilContainer">
-
-<div class="avatarJugador">
-<img src="img/avatar.png" alt="avatar">
-</div>
-
-<div class="datosJugador">
-
-<p>Nombre: <span id="perfilNombre">Jugador</span></p>
-
-<p>Cartones Comprados: <span id="perfilCartones">0</span></p>
-
-<p>Victorias: <span id="perfilVictorias">0</span></p>
-
-<p>Premios Ganados: <span id="perfilPremios">$0</span></p>
-
-</div>
-
-</div>
-
-</section>
-<section id="logrosSection">
-
-<h2>Logros</h2>
-
-<div class="logrosContainer">
-
-<div class="logroItem">
-🏆 Primer Bingo
-</div>
-
-<div class="logroItem">
-🎯 10 partidas jugadas
-</div>
-
-<div class="logroItem">
-💰 Ganador del día
-</div>
-
-<div class="logroItem">
-⭐ Jugador frecuente
-</div>
-
-</div>
-
-</section>
-<section id="tiendaSection">
-
-<h2>Tienda de Fichas</h2>
-
-<div class="tiendaContainer">
-
-<div class="packFichas">
-
-<p>100 fichas</p>
-
-<p>$5</p>
-
-<button>Comprar</button>
-
-</div>
-
-<div class="packFichas">
-
-<p>500 fichas</p>
-
-<p>$20</p>
-
-<button>Comprar</button>
-
-</div>
-
-<div class="packFichas">
-
-<p>1000 fichas</p>
-
-<p>$35</p>
-
-<button>Comprar</button>
-
-</div>
-
-</div>
-
-</section>
 <section id="moderacionSection">
-
-<h2>Panel Moderación</h2>
-
-<div class="moderacionContainer">
-
-<button class="btnModeracion">
-Silenciar jugador
-</button>
-
-<button class="btnModeracion">
-Expulsar jugador
-</button>
-
-<button class="btnModeracion">
-Bloquear chat
-</button>
-
-<button class="btnModeracion">
-Reactivar chat
-</button>
-
-</div>
-
+  <h2>Panel Moderación</h2>
+  <div class="moderacionContainer">
+    <button class="btnModeracion" id="silenciarJugador">Silenciar jugador</button>
+    <button class="btnModeracion" id="expulsarJugador">Expulsar jugador</button>
+    <button class="btnModeracion" id="bloquearChat">Bloquear chat</button>
+    <button class="btnModeracion" id="reactivarChat">Reactivar chat</button>
+  </div>
 </section>
+
 <section id="botsSection">
-
-<h2>Control de Bots</h2>
-
-<div class="botControl">
-
-<button id="activarBots">
-Activar Bots
-</button>
-
-<button id="desactivarBots">
-Desactivar Bots
-</button>
-
-</div>
-
+  <h2>Control de Bots</h2>
+  <div class="botControl">
+    <button id="activarBots">Activar Bots</button>
+    <button id="desactivarBots">Desactivar Bots</button>
+  </div>
 </section>
+
 <section id="estadisticasAvanzadas">
-
-<h2>Estadísticas Avanzadas</h2>
-
-<div class="statsGrid">
-
-<div class="statItem">
-<p>Números Cantados</p>
-<span id="numerosCantados">0</span>
-</div>
-
-<div class="statItem">
-<p>Cartones Activos</p>
-<span id="cartonesActivos">0</span>
-</div>
-
-<div class="statItem">
-<p>Tiempo de Partida</p>
-<span id="tiempoPartida">00:00</span>
-</div>
-
-</div>
-
+  <h2>Estadísticas Avanzadas</h2>
+  <div class="statsGrid">
+    <div class="statItem">
+      <p>Números Cantados</p>
+      <span id="numerosCantados">0</span>
+    </div>
+    <div class="statItem">
+      <p>Cartones Activos</p>
+      <span id="cartonesActivos">0</span>
+    </div>
+    <div class="statItem">
+      <p>Tiempo de Partida</p>
+      <span id="tiempoPartida">00:00</span>
+    </div>
+  </div>
 </section>
+
 <section id="rankingSemanal">
-
-<h2>Ranking Semanal</h2>
-
-<ol class="rankingLista">
-
-<li>Jugador1 - $500</li>
-<li>Jugador2 - $400</li>
-<li>Jugador3 - $300</li>
-<li>Jugador4 - $200</li>
-<li>Jugador5 - $100</li>
-
-</ol>
-
+  <h2>Ranking Semanal</h2>
+  <ol class="rankingLista">
+    <li>Jugador1 - $500</li>
+    <li>Jugador2 - $400</li>
+    <li>Jugador3 - $300</li>
+    <li>Jugador4 - $200</li>
+    <li>Jugador5 - $100</li>
+  </ol>
 </section>
 <section id="publicidadSection">
-
-<h2>Promociones</h2>
-
-<div class="promoContainer">
-
-<div class="promoItem">
-2x1 en cartones viernes
-</div>
-
-<div class="promoItem">
-Pozo doble sábado
-</div>
-
-<div class="promoItem">
-Bingo especial domingo
-</div>
-
-</div>
-
+  <h2>Promociones</h2>
+  <div class="promoContainer">
+    <div class="promoItem">2x1 en cartones viernes</div>
+    <div class="promoItem">Pozo doble sábado</div>
+    <div class="promoItem">Bingo especial domingo</div>
+  </div>
 </section>
+
 <section id="configuracionSala">
+  <h2>Configuración Sala</h2>
+  <form id="configSalaForm">
+    <label>Precio Cartón</label>
+    <input type="text" id="precioCarton" value="1"> <!-- editable -->
 
-<h2>Configuración Sala</h2>
+    <label>Pozo Inicial</label>
+    <input type="text" id="pozoInicial" value="100"> <!-- editable -->
 
-<form id="configSalaForm">
+    <label>Tiempo entre números (segundos)</label>
+    <input type="number" id="tiempoEntreNumeros" value="5">
 
-<label>Precio Cartón</label>
-
-<input type="number" value="1">
-
-<label>Pozo Inicial</label>
-
-<input type="number" value="100">
-
-<label>Tiempo entre números</label>
-
-<input type="number" value="5">
-
-<button type="submit">
-Guardar
-</button>
-
-</form>
-
+    <button type="submit">Guardar</button>
+  </form>
 </section>
+
 <section id="pantallaEspera">
-
-<h2>Esperando próxima partida</h2>
-
-<div class="contadorInicio">
-
-<span id="contadorPartida">
-30
-</span>
-
-<p>segundos</p>
-
-</div>
-
+  <h2>Esperando próxima partida</h2>
+  <div class="contadorInicio">
+    <span id="contadorPartida">30</span>
+    <p>segundos</p>
+  </div>
 </section>
+
 <section id="panelPremios">
-
-<h2>Premios Disponibles</h2>
-
-<div class="premiosContainer">
-
-<div class="premioItem">
-<h3>Premio Línea</h3>
-<p id="premioLineaValor">$0</p>
-</div>
-
-<div class="premioItem">
-<h3>Premio Bingo</h3>
-<p id="premioBingoValor">$0</p>
-</div>
-
-<div class="premioItem">
-<h3>Pozo Acumulado</h3>
-<p id="pozoAcumuladoValor">$0</p>
-</div>
-
-</div>
-
+  <h2>Premios Disponibles</h2>
+  <div class="premiosContainer">
+    <div class="premioItem">
+      <h3>Premio Línea</h3>
+      <p id="premioLineaValor">$0</p> <!-- editable -->
+    </div>
+    <div class="premioItem">
+      <h3>Premio Bingo</h3>
+      <p id="premioBingoValor">$0</p> <!-- editable -->
+    </div>
+    <div class="premioItem">
+      <h3>Pozo Acumulado</h3>
+      <p id="pozoAcumuladoValor">$0</p> <!-- editable -->
+    </div>
+  </div>
 </section>
 <section id="historialChat">
-
-<h2>Historial del Chat</h2>
-
-<div class="chatHistorialContainer">
-
-<div class="chatLinea">
-<span class="usuarioChat">Jugador1:</span>
-<span class="mensajeChat">Suerte a todos!</span>
-</div>
-
-<div class="chatLinea">
-<span class="usuarioChat">Jugador2:</span>
-<span class="mensajeChat">Vamos bingo!</span>
-</div>
-
-<div class="chatLinea">
-<span class="usuarioChat">Admin:</span>
-<span class="mensajeChat">Comienza la partida</span>
-</div>
-
-</div>
-
+  <h2>Historial del Chat</h2>
+  <div class="chatHistorialContainer">
+    <div class="chatLinea">
+      <span class="usuarioChat">Jugador1:</span>
+      <span class="mensajeChat">Suerte a todos!</span>
+    </div>
+    <div class="chatLinea">
+      <span class="usuarioChat">Jugador2:</span>
+      <span class="mensajeChat">Vamos bingo!</span>
+    </div>
+    <div class="chatLinea">
+      <span class="usuarioChat">Admin:</span>
+      <span class="mensajeChat">Comienza la partida</span>
+    </div>
+  </div>
 </section>
+
 <section id="sistemaAmigos">
-
-<h2>Amigos</h2>
-
-<div class="amigosContainer">
-
-<div class="amigoItem">
-<span>Jugador5</span>
-<button>Invitar</button>
-</div>
-
-<div class="amigoItem">
-<span>Jugador6</span>
-<button>Invitar</button>
-</div>
-
-<div class="amigoItem">
-<span>Jugador7</span>
-<button>Invitar</button>
-</div>
-
-</div>
-
+  <h2>Amigos</h2>
+  <div class="amigosContainer">
+    <div class="amigoItem">
+      <span>Jugador5</span>
+      <button>Invitar</button>
+    </div>
+    <div class="amigoItem">
+      <span>Jugador6</span>
+      <button>Invitar</button>
+    </div>
+    <div class="amigoItem">
+      <span>Jugador7</span>
+      <button>Invitar</button>
+    </div>
+  </div>
 </section>
+
 <section id="invitacionesSection">
-
-<h2>Invitaciones</h2>
-
-<div class="invitacionesContainer">
-
-<div class="invitacionItem">
-
-<p>Jugador8 te invitó a una sala</p>
-
-<button>Aceptar</button>
-
-<button>Rechazar</button>
-
-</div>
-
-<div class="invitacionItem">
-
-<p>Jugador9 te invitó a un torneo</p>
-
-<button>Aceptar</button>
-
-<button>Rechazar</button>
-
-</div>
-
-</div>
-
+  <h2>Invitaciones</h2>
+  <div class="invitacionesContainer">
+    <div class="invitacionItem">
+      <p>Jugador8 te invitó a una sala</p>
+      <button>Aceptar</button>
+      <button>Rechazar</button>
+    </div>
+    <div class="invitacionItem">
+      <p>Jugador9 te invitó a un torneo</p>
+      <button>Aceptar</button>
+      <button>Rechazar</button>
+    </div>
+  </div>
 </section>
+
 <section id="lobbyPrincipal">
-
-<h2>Lobby de Salas</h2>
-
-<div class="salasContainer">
-
-<div class="salaItem">
-
-<h3>Sala Rápida</h3>
-
-<p>Jugadores: 12 / 30</p>
-
-<button>Entrar</button>
-
-</div>
-
-<div class="salaItem">
-
-<h3>Sala Clásica</h3>
-
-<p>Jugadores: 20 / 50</p>
-
-<button>Entrar</button>
-
-</div>
-
-<div class="salaItem">
-
-<h3>Sala VIP</h3>
-
-<p>Jugadores: 5 / 20</p>
-
-<button>Entrar</button>
-
-</div>
-
-</div>
-
+  <h2>Lobby de Salas</h2>
+  <div class="salasContainer">
+    <div class="salaItem">
+      <h3>Sala Rápida</h3>
+      <p>Jugadores: 12 / 30</p>
+      <button>Entrar</button>
+    </div>
+    <div class="salaItem">
+      <h3>Sala Clásica</h3>
+      <p>Jugadores: 20 / 50</p>
+      <button>Entrar</button>
+    </div>
+    <div class="salaItem">
+      <h3>Sala VIP</h3>
+      <p>Jugadores: 5 / 20</p>
+      <button>Entrar</button>
+    </div>
+  </div>
 </section>
+<section id="moderacionSection">
+  <h2>Panel Moderación</h2>
+  <div class="moderacionContainer">
+    <button class="btnModeracion">Silenciar jugador</button>
+    <button class="btnModeracion">Expulsar jugador</button>
+    <button class="btnModeracion">Bloquear chat</button>
+    <button class="btnModeracion">Reactivar chat</button>
+  </div>
+</section>
+
+<section id="botsSection">
+  <h2>Control de Bots</h2>
+  <div class="botControl">
+    <button id="activarBots">Activar Bots</button>
+    <button id="desactivarBots">Desactivar Bots</button>
+  </div>
+</section>
+
+<section id="estadisticasAvanzadas">
+  <h2>Estadísticas Avanzadas</h2>
+  <div class="statsGrid">
+    <div class="statItem">
+      <p>Números Cantados</p>
+      <span id="numerosCantados">0</span>
+    </div>
+    <div class="statItem">
+      <p>Cartones Activos</p>
+      <span id="cartonesActivos">0</span>
+    </div>
+    <div class="statItem">
+      <p>Tiempo de Partida</p>
+      <span id="tiempoPartida">00:00</span>
+    </div>
+  </div>
+</section>
+
+<section id="rankingSemanal">
+  <h2>Ranking Semanal</h2>
+  <ol class="rankingLista">
+    <li>Jugador1 - $500</li>
+    <li>Jugador2 - $400</li>
+    <li>Jugador3 - $300</li>
+    <li>Jugador4 - $200</li>
+    <li>Jugador5 - $100</li>
+  </ol>
+</section>
+
+<section id="publicidadSection">
+  <h2>Promociones</h2>
+  <div class="promoContainer">
+    <div class="promoItem">2x1 en cartones viernes</div>
+    <div class="promoItem">Pozo doble sábado</div>
+    <div class="promoItem">Bingo especial domingo</div>
+  </div>
+</section>
+<section id="configuracionSala">
+  <h2>Configuración Sala</h2>
+  <form id="configSalaForm">
+    <label>Precio Cartón</label>
+    <input type="number" id="precioCarton" value="1">
+
+    <label>Pozo Inicial</label>
+    <input type="text" id="pozoInicial" value="$100">
+
+    <label>Tiempo entre números (segundos)</label>
+    <input type="number" id="tiempoEntreNumeros" value="5">
+
+    <label>Activar Premio Línea</label>
+    <select id="activarLinea">
+      <option value="true">Sí</option>
+      <option value="false">No</option>
+    </select>
+
+    <button type="submit">Guardar</button>
+  </form>
+</section>
+
+<section id="pantallaEspera">
+  <h2>Esperando próxima partida</h2>
+  <div class="contadorInicio">
+    <span id="contadorPartida">30</span>
+    <p>segundos</p>
+  </div>
+</section>
+
+<section id="panelPremios">
+  <h2>Premios Disponibles</h2>
+  <div class="premiosContainer">
+    <div class="premioItem">
+      <h3>Premio Línea</h3>
+      <input type="text" id="premioLineaValor" value="$0">
+    </div>
+    <div class="premioItem">
+      <h3>Premio Bingo</h3>
+      <input type="text" id="premioBingoValor" value="$0">
+    </div>
+    <div class="premioItem">
+      <h3>Pozo Acumulado</h3>
+      <input type="text" id="pozoAcumuladoValor" value="$0">
+    </div>
+  </div>
+</section>
+<section id="historialChat">
+  <h2>Historial del Chat</h2>
+  <div class="chatHistorialContainer" id="chatHistorialContainer">
+    <!-- Los mensajes se llenan dinámicamente -->
+  </div>
+</section>
+
+<section id="sistemaAmigos">
+  <h2>Amigos</h2>
+  <div class="amigosContainer" id="amigosContainer">
+    <!-- Lista de amigos dinámica -->
+  </div>
+</section>
+
+<section id="invitacionesSection">
+  <h2>Invitaciones</h2>
+  <div class="invitacionesContainer" id="invitacionesContainer">
+    <!-- Invitaciones dinámicas -->
+  </div>
+</section>
+
+<section id="lobbyPrincipal">
+  <h2>Lobby de Salas</h2>
+  <div class="salasContainer" id="salasContainer">
+    <!-- Salas dinámicas -->
+  </div>
+</section>
+
