@@ -1,1181 +1,1143 @@
-/* Reset y Base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary: #6c5ce7;
-    --primary-dark: #5b4cdb;
-    --secondary: #00cec9;
-    --accent: #fdcb6e;
-    --danger: #d63031;
-    --success: #00b894;
-    --dark: #2d3436;
-    --darker: #1e272e;
-    --light: #dfe6e9;
-    --gold: #ffd700;
-    --silver: #c0c0c0;
-    --neon-blue: #00f3ff;
-    --neon-pink: #ff00ff;
-}
-
-body {
-    font-family: 'Montserrat', sans-serif;
-    background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
-    color: var(--light);
-    overflow-x: hidden;
-    min-height: 100vh;
-}
-
-/* Utilidades */
-.screen {
-    display: none;
-    min-height: 100vh;
-}
+/* ========================= */
+/* RESET GENERAL */
+/* ========================= */
 
-.screen.active {
-    display: block;
-}
-
-/* Login Screen */
-.login-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at center, #2d2d44 0%, #1a1a2e 100%);
-    padding: 20px;
-}
-
-.logo-bingo {
-    text-align: center;
-    margin-bottom: 40px;
-    animation: glow 2s ease-in-out infinite alternate;
-}
-
-.logo-bingo h1 {
-    font-size: 4rem;
-    font-weight: 900;
-    background: linear-gradient(45deg, var(--gold), var(--accent), var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 30px rgba(253, 203, 110, 0.5);
-    letter-spacing: 2px;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
 }
 
-.neon-text {
-    font-size: 1.5rem;
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
-    letter-spacing: 8px;
-    margin-top: 10px;
-    animation: pulse 2s infinite;
+body{
+background:#0e0e0e;
+color:white;
+min-height:100vh;
 }
 
-@keyframes glow {
-    from { filter: brightness(1); }
-    to { filter: brightness(1.2); }
+/* ========================= */
+/* HEADER */
+/* ========================= */
+
+#mainHeader{
+background:#1b1b1b;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.logoContainer h1{
+color:#ffd700;
+font-size:24px;
+}
+
+/* ========================= */
+/* NAV */
+/* ========================= */
+
+.mainNav ul{
+list-style:none;
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.mainNav a{
+color:white;
+text-decoration:none;
+font-size:16px;
+transition:0.3s;
+}
+
+.mainNav a:hover{
+color:#ffd700;
+}
+
+/* ========================= */
+/* MAIN */
+/* ========================= */
+
+#mainContainer{
+padding:20px;
+}
+
+/* ========================= */
+/* SECTIONS */
+/* ========================= */
+
+section{
+margin-bottom:40px;
+background:#1a1a1a;
+padding:20px;
+border-radius:10px;
+}
+
+/* ========================= */
+/* TITULOS */
+/* ========================= */
+
+h2{
+margin-bottom:15px;
+color:#ffd700;
+}
+/* ========================= */
+/* BOTONES */
+/* ========================= */
+
+button{
+background:#ffd700;
+border:none;
+padding:10px 18px;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+button:hover{
+background:#ffb700;
+transform:scale(1.05);
+}
+
+/* ========================= */
+/* INPUTS */
+/* ========================= */
+
+input{
+padding:10px;
+border-radius:5px;
+border:none;
+width:100%;
+margin-top:5px;
+margin-bottom:10px;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+textarea{
+padding:10px;
+border-radius:5px;
+border:none;
+width:100%;
 }
 
-.login-options {
-    display: flex;
-    gap: 40px;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
+/* ========================= */
+/* FORMULARIOS */
+/* ========================= */
+
+form{
+max-width:400px;
 }
 
-.login-box {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 40px;
-    width: 320px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s, box-shadow 0.3s;
+.campo{
+margin-bottom:15px;
 }
+/* ========================= */
+/* CARTONES */
+/* ========================= */
 
-.login-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(108, 92, 231, 0.3);
+.carton{
+background:#111;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+max-width:300px;
 }
 
-.login-box h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--accent);
-    font-size: 1.8rem;
+.fila{
+display:flex;
+justify-content:space-between;
+margin-bottom:5px;
 }
 
-.login-box input {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.3);
-    color: white;
-    font-size: 1rem;
-    transition: border-color 0.3s;
+.fila span{
+background:#222;
+padding:10px;
+border-radius:4px;
+width:40px;
+text-align:center;
+font-weight:bold;
 }
+
+/* ========================= */
+/* BOLILLERO */
+/* ========================= */
 
-.login-box input:focus {
-    outline: none;
-    border-color: var(--primary);
+#numeroActual{
+font-size:40px;
+font-weight:bold;
+color:#ffd700;
+margin:10px 0;
 }
 
-.btn-primary, .btn-admin {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+#bolillasCantadas{
+display:flex;
+flex-wrap:wrap;
+gap:5px;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
+.bola{
+background:#333;
+padding:8px;
+border-radius:50%;
+width:35px;
+height:35px;
+display:flex;
+align-items:center;
+justify-content:center;
 }
+/* ========================= */
+/* CHAT */
+/* ========================= */
 
-.btn-primary:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(108, 92, 231, 0.5);
+#chatContainer{
+background:#111;
+padding:15px;
+border-radius:8px;
+max-width:500px;
 }
 
-.btn-admin {
-    background: linear-gradient(135deg, var(--danger), #b71540);
-    color: white;
+#chatMensajes{
+max-height:200px;
+overflow-y:auto;
+margin-bottom:10px;
 }
 
-.btn-admin:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(214, 48, 49, 0.5);
+.mensaje{
+margin-bottom:5px;
 }
 
-.divider {
-    width: 2px;
-    height: 200px;
-    background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+.chatInput{
+display:flex;
+gap:10px;
 }
 
-/* Game Screen Layout */
-.game-layout {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+.chatInput input{
+flex:1;
 }
 
-.game-header {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    align-items: center;
-    padding: 20px 40px;
-    background: rgba(0, 0, 0, 0.4);
-    border-bottom: 2px solid var(--primary);
-    backdrop-filter: blur(10px);
+/* ========================= */
+/* LISTA JUGADORES */
+/* ========================= */
+
+#listaJugadores{
+list-style:none;
+margin-top:10px;
 }
 
-.header-left {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.jugador{
+padding:8px;
+background:#111;
+margin-bottom:5px;
+border-radius:5px;
 }
+/* ========================= */
+/* RESPONSIVE TABLET */
+/* ========================= */
+
+@media (max-width:900px){
 
-.logo-small {
-    font-size: 1.5rem;
-    font-weight: 900;
-    background: linear-gradient(45deg, var(--gold), var(--accent));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+.mainNav ul{
+flex-direction:column;
+gap:10px;
 }
 
-.room-info {
-    color: var(--secondary);
-    font-size: 0.9rem;
+#mainHeader{
+flex-direction:column;
+align-items:flex-start;
 }
 
-.current-number-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
 }
 
-.number-ball {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    font-weight: 900;
-    color: white;
-    box-shadow: 0 0 40px rgba(231, 76, 60, 0.6), inset 0 -10px 20px rgba(0,0,0,0.3);
-    border: 4px solid var(--gold);
-    animation: ballBounce 1s ease-in-out;
+/* ========================= */
+/* RESPONSIVE CELULAR */
+/* ========================= */
+
+@media (max-width:600px){
+
+section{
+padding:15px;
 }
 
-@keyframes ballBounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+.fila span{
+width:30px;
+padding:8px;
+font-size:12px;
 }
 
-.number-text {
-    font-size: 1.5rem;
-    color: var(--accent);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+#numeroActual{
+font-size:30px;
 }
 
-.jackpot-display {
-    text-align: right;
+button{
+padding:8px 12px;
 }
 
-.jackpot-label {
-    font-size: 0.9rem;
-    color: var(--secondary);
-    letter-spacing: 3px;
 }
+/* ========================= */
+/* PANEL SALA */
+/* ========================= */
 
-.jackpot-amount {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--gold);
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-    animation: shimmer 2s infinite;
+.salaContainer{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
 }
 
-@keyframes shimmer {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+.panelBolillero{
+background:#111;
+padding:20px;
+border-radius:10px;
+flex:1;
+min-width:250px;
 }
 
-/* Main Game Area */
-.game-main {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 20px;
-    padding: 20px;
-    overflow: hidden;
+.panelPozo{
+background:#111;
+padding:20px;
+border-radius:10px;
+flex:1;
+min-width:250px;
 }
+
+/* ========================= */
+/* POZO */
+/* ========================= */
 
-.cards-panel, .numbers-panel, .chat-panel {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+.pozoBox{
+display:flex;
+flex-direction:column;
+gap:10px;
 }
 
-.panel-header {
-    padding: 20px;
-    background: rgba(108, 92, 231, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.pozoItem{
+background:#222;
+padding:12px;
+border-radius:6px;
+text-align:center;
 }
 
-.panel-header h3 {
-    color: var(--accent);
-    font-size: 1.3rem;
+.pozoItem span{
+font-size:20px;
+font-weight:bold;
+color:#ffd700;
 }
+/* ========================= */
+/* TIENDA */
+/* ========================= */
 
-.btn-request {
-    padding: 10px 20px;
-    background: var(--success);
-    border: none;
-    border-radius: 25px;
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
+.tiendaContainer{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
 }
 
-.btn-request:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 184, 148, 0.4);
+.packFichas{
+background:#111;
+padding:20px;
+border-radius:10px;
+text-align:center;
+width:150px;
 }
 
-.cards-container {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+.packFichas p{
+margin-bottom:10px;
 }
 
-/* Bingo Card Styling */
-.bingo-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-    border-radius: 15px;
-    padding: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.3s;
+/* ========================= */
+/* PROMOCIONES */
+/* ========================= */
+
+.promoContainer{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
 }
 
-.bingo-card:hover {
-    transform: translateY(-5px) rotateX(5deg);
+.promoItem{
+background:#222;
+padding:15px;
+border-radius:8px;
+flex:1;
+min-width:150px;
+text-align:center;
 }
+/* ========================= */
+/* PERFIL */
+/* ========================= */
 
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--primary);
+.perfilContainer{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
 }
 
-.card-series {
-    font-weight: 900;
-    color: var(--primary);
-    font-size: 0.9rem;
+.avatarJugador img{
+width:80px;
+height:80px;
+border-radius:50%;
 }
 
-.card-owner {
-    font-size: 0.8rem;
-    color: var(--dark);
-    opacity: 0.7;
+.datosJugador p{
+margin-bottom:8px;
 }
+
+/* ========================= */
+/* LOGROS */
+/* ========================= */
 
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
+.logrosContainer{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
 }
 
-.card-cell {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-weight: 700;
-    color: var(--dark);
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
+.logroItem{
+background:#222;
+padding:10px;
+border-radius:6px;
 }
+/* ========================= */
+/* RANKING */
+/* ========================= */
 
-.card-cell:hover {
-    background: #f8f9fa;
-    transform: scale(1.1);
-    z-index: 10;
+#tablaRanking{
+width:100%;
+border-collapse:collapse;
 }
 
-.card-cell.marked {
-    background: var(--success);
-    color: white;
-    border-color: var(--success);
-    animation: markCell 0.3s ease;
+#tablaRanking th{
+background:#333;
+padding:10px;
 }
 
-.card-cell.winning {
-    background: var(--gold);
-    color: var(--dark);
-    border-color: var(--gold);
-    animation: winningPulse 1s infinite;
+#tablaRanking td{
+background:#222;
+padding:10px;
+text-align:center;
 }
 
-@keyframes markCell {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+/* ========================= */
+/* HISTORIAL */
+/* ========================= */
+
+.tablaHistorial{
+width:100%;
+border-collapse:collapse;
 }
 
-@keyframes winningPulse {
-    0%, 100% { box-shadow: 0 0 10px var(--gold); }
-    50% { box-shadow: 0 0 30px var(--gold), 0 0 50px var(--gold); }
+.tablaHistorial th{
+background:#333;
+padding:10px;
 }
 
-/* Numbers Panel */
-.numbers-panel {
-    padding: 20px;
+.tablaHistorial td{
+background:#222;
+padding:10px;
 }
+/* ========================= */
+/* ANIMACION BOLILLAS */
+/* ========================= */
 
-.last-numbers h3 {
-    color: var(--accent);
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-    text-align: center;
+.bolaAnimada{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#ffd700;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+animation:flotar 3s infinite;
 }
+
+@keyframes flotar{
 
-.numbers-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    max-height: 300px;
-    overflow-y: auto;
-    padding: 10px;
-    background: rgba(0,0,0,0.2);
-    border-radius: 10px;
+0%{
+transform:translateY(0);
 }
 
-.called-number {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--primary);
-    color: white;
-    border-radius: 50%;
-    font-weight: 700;
-    font-size: 0.9rem;
-    animation: popIn 0.3s ease;
+50%{
+transform:translateY(-10px);
 }
 
-@keyframes popIn {
-    0% { transform: scale(0); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+100%{
+transform:translateY(0);
 }
 
-.game-status {
-    margin-top: 20px;
-    text-align: center;
-    padding: 20px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 15px;
 }
 
-.status-message {
-    font-size: 1.3rem;
-    color: var(--secondary);
-    font-weight: 600;
-    margin-bottom: 10px;
+.bolilleroAnimado{
+display:flex;
+gap:10px;
+margin-top:10px;
 }
+/* ========================= */
+/* GANADOR */
+/* ========================= */
 
-.countdown {
-    font-size: 3rem;
-    font-weight: 900;
-    color: var(--accent);
-    text-shadow: 0 0 20px rgba(253, 203, 110, 0.5);
+.pantallaGanador{
+background:#111;
+padding:40px;
+border-radius:10px;
+text-align:center;
 }
 
-/* Chat Panel */
-.chat-header {
-    padding: 15px 20px;
-    background: rgba(0, 206, 201, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.pantallaGanador h1{
+font-size:40px;
+color:#ffd700;
+margin-bottom:20px;
 }
 
-.chat-header h3 {
-    color: var(--secondary);
+.premioGanador{
+font-size:24px;
+margin-bottom:20px;
 }
+/* ========================= */
+/* SALAS */
+/* ========================= */
 
-.online-count {
-    font-size: 0.8rem;
-    color: var(--success);
-    background: rgba(0, 184, 148, 0.2);
-    padding: 5px 10px;
-    border-radius: 15px;
+.salasContainer{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
 }
 
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.salaItem{
+background:#111;
+padding:20px;
+border-radius:10px;
+width:200px;
+text-align:center;
 }
 
-.chat-message {
-    max-width: 80%;
-    padding: 10px 15px;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    animation: slideIn 0.3s ease;
+.salaItem h3{
+margin-bottom:10px;
 }
+/* ========================= */
+/* AMIGOS */
+/* ========================= */
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
+.amigosContainer{
+display:flex;
+flex-direction:column;
+gap:10px;
 }
 
-.chat-message.own {
-    align-self: flex-end;
-    background: var(--primary);
-    color: white;
-    border-bottom-right-radius: 5px;
+.amigoItem{
+background:#222;
+padding:10px;
+border-radius:6px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
+/* ========================= */
+/* NOTIFICACIONES */
+/* ========================= */
 
-.chat-message.other {
-    align-self: flex-start;
-    background: rgba(255,255,255,0.1);
-    color: var(--light);
-    border-bottom-left-radius: 5px;
+#notificacionesContainer{
+display:flex;
+flex-direction:column;
+gap:10px;
 }
 
-.chat-message.system {
-    align-self: center;
-    background: rgba(253, 203, 110, 0.2);
-    color: var(--accent);
-    font-style: italic;
-    font-size: 0.8rem;
+.notificacion{
+background:#222;
+padding:10px;
+border-radius:6px;
 }
+/* ========================= */
+/* CONTADOR PARTIDA */
+/* ========================= */
 
-.chat-message.warning {
-    background: rgba(214, 48, 49, 0.3);
-    color: #ff7675;
-    border: 1px solid var(--danger);
+.contadorInicio{
+text-align:center;
+font-size:30px;
+margin-top:10px;
 }
 
-.chat-input-area {
-    padding: 15px;
-    display: flex;
-    gap: 10px;
-    background: rgba(0,0,0,0.2);
+#contadorPartida{
+font-size:50px;
+color:#ffd700;
 }
+/* ========================= */
+/* TABLA BINGO NUMEROS */
+/* ========================= */
 
-.chat-input-area input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 25px;
-    background: rgba(255,255,255,0.05);
-    color: white;
-    font-size: 0.9rem;
+#tablaBingo{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:10px;
 }
 
-.chat-input-area input:focus {
-    outline: none;
-    border-color: var(--primary);
+#tablaBingo div{
+background:#111;
+padding:10px;
+border-radius:8px;
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
-.btn-send {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: var(--secondary);
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s;
+#tablaBingo span{
+background:#222;
+margin:3px;
+padding:6px;
+border-radius:4px;
+width:30px;
+text-align:center;
+font-size:12px;
 }
 
-.btn-send:hover {
-    transform: scale(1.1);
+#tablaBingo h3{
+margin-bottom:5px;
+color:#ffd700;
 }
+/* ========================= */
+/* HISTORIAL NUMEROS */
+/* ========================= */
 
-/* Footer */
-.game-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    padding: 20px;
-    background: rgba(0,0,0,0.4);
-    border-top: 2px solid var(--primary);
+#historialNumeros{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+margin-top:10px;
 }
 
-.btn-claim, .btn-bingo {
-    padding: 15px 40px;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.2rem;
-    font-weight: 900;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+.historialNumero{
+background:#333;
+padding:8px;
+border-radius:6px;
+font-weight:bold;
 }
+/* ========================= */
+/* LISTA ESPERA */
+/* ========================= */
 
-.btn-claim {
-    background: linear-gradient(135deg, #f39c12, #e67e22);
-    color: white;
-    box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+.listaEspera{
+list-style:none;
+margin-top:10px;
 }
 
-.btn-claim:hover:not(:disabled) {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 30px rgba(243, 156, 18, 0.6);
+.listaEspera li{
+background:#222;
+padding:10px;
+border-radius:6px;
+margin-bottom:5px;
 }
 
-.btn-bingo {
-    background: linear-gradient(135deg, var(--danger), #b71540);
-    color: white;
-    box-shadow: 0 5px 20px rgba(214, 48, 49, 0.4);
-    animation: bingoPulse 2s infinite;
+/* ========================= */
+/* EVENTOS SALA */
+/* ========================= */
+
+.feedActividad{
+display:flex;
+flex-direction:column;
+gap:8px;
 }
 
-@keyframes bingoPulse {
-    0%, 100% { box-shadow: 0 5px 20px rgba(214, 48, 49, 0.4); }
-    50% { box-shadow: 0 5px 40px rgba(214, 48, 49, 0.8); }
+.evento{
+background:#222;
+padding:10px;
+border-radius:6px;
 }
+/* ========================= */
+/* MODERACION */
+/* ========================= */
 
-.btn-claim:disabled, .btn-bingo:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    animation: none;
+.moderacionContainer{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
 }
 
-.volume-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--light);
+.btnModeracion{
+background:#ff4c4c;
+color:white;
+padding:10px;
+border-radius:6px;
+border:none;
 }
 
-.volume-control input[type="range"] {
-    width: 100px;
-    accent-color: var(--primary);
+.btnModeracion:hover{
+background:#d93636;
 }
+/* ========================= */
+/* CONFIGURACION SALA */
+/* ========================= */
 
-/* Modals */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
+#configSalaForm{
+display:flex;
+flex-direction:column;
+gap:10px;
+max-width:300px;
 }
+
+/* ========================= */
+/* SOPORTE */
+/* ========================= */
 
-.modal.active {
-    display: flex;
+#formSoporte{
+display:flex;
+flex-direction:column;
+gap:10px;
+max-width:400px;
 }
+/* ========================= */
+/* RANKING SEMANAL */
+/* ========================= */
 
-.modal-content {
-    background: linear-gradient(135deg, #2d2d44, #1e1e2e);
-    border-radius: 30px;
-    padding: 40px;
-    max-width: 600px;
-    width: 90%;
-    text-align: center;
-    border: 2px solid var(--gold);
-    box-shadow: 0 0 100px rgba(255, 215, 0, 0.3);
-    position: relative;
-    overflow: hidden;
+.rankingLista{
+margin-top:10px;
+padding-left:20px;
 }
 
-.winner-content {
-    animation: winnerZoom 0.5s ease;
+.rankingLista li{
+margin-bottom:6px;
 }
 
-@keyframes winnerZoom {
-    0% { transform: scale(0); }
-    80% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+/* ========================= */
+/* TORNEOS */
+/* ========================= */
+
+.torneosContainer{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
 }
 
-.winner-title {
-    font-size: 3.5rem;
-    background: linear-gradient(45deg, var(--gold), var(--accent), var(--gold));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    margin-bottom: 20px;
-    animation: titleGlow 1s infinite alternate;
+.torneoBox{
+background:#111;
+padding:20px;
+border-radius:10px;
+width:200px;
+text-align:center;
 }
+/* ========================= */
+/* CHAT HISTORIAL */
+/* ========================= */
 
-@keyframes titleGlow {
-    from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-    to { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.5); }
+.chatHistorialContainer{
+background:#111;
+padding:15px;
+border-radius:8px;
+max-height:250px;
+overflow-y:auto;
 }
 
-.winner-info {
-    font-size: 1.5rem;
-    color: white;
-    margin: 20px 0;
+.chatLinea{
+margin-bottom:8px;
 }
 
-.confetti-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    overflow: hidden;
+.usuarioChat{
+color:#ffd700;
+margin-right:5px;
 }
+/* ========================= */
+/* INVITACIONES */
+/* ========================= */
 
-.confetti {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    animation: confetti-fall 3s linear forwards;
+.invitacionesContainer{
+display:flex;
+flex-direction:column;
+gap:10px;
 }
 
-@keyframes confetti-fall {
-    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(600px) rotate(720deg); opacity: 0; }
+.invitacionItem{
+background:#222;
+padding:10px;
+border-radius:6px;
+display:flex;
+flex-direction:column;
+gap:5px;
 }
+/* ========================= */
+/* ESTADISTICAS */
+/* ========================= */
 
-.fireworks {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
+.estadisticasContainer{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
 }
 
-/* Admin Panel */
-.admin-layout {
-    display: flex;
-    min-height: 100vh;
-    background: #0f0f1e;
+.statBox{
+background:#111;
+padding:20px;
+border-radius:10px;
+text-align:center;
+min-width:120px;
 }
 
-.admin-sidebar {
-    width: 280px;
-    background: linear-gradient(180deg, #1e1e2e 0%, #2d2d44 100%);
-    border-right: 2px solid var(--primary);
-    display: flex;
-    flex-direction: column;
-    padding: 30px 20px;
+.statBox span{
+font-size:20px;
+color:#ffd700;
 }
+/* ========================= */
+/* FOOTER */
+/* ========================= */
 
-.admin-logo {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: var(--gold);
-    text-align: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+#mainFooter{
+background:#1b1b1b;
+padding:20px;
+text-align:center;
+margin-top:40px;
 }
 
-.admin-nav {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.footerContainer p{
+margin-bottom:5px;
 }
+
+/* ========================= */
+/* SCROLLBAR */
+/* ========================= */
 
-.nav-btn {
-    padding: 15px 20px;
-    background: rgba(255,255,255,0.05);
-    border: none;
-    border-radius: 10px;
-    color: var(--light);
-    text-align: left;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 1rem;
+::-webkit-scrollbar{
+width:6px;
 }
 
-.nav-btn:hover, .nav-btn.active {
-    background: var(--primary);
-    color: white;
-    transform: translateX(10px);
+::-webkit-scrollbar-thumb{
+background:#444;
+border-radius:10px;
 }
+/* ========================= */
+/* EFECTO CASINO FONDO */
+/* ========================= */
 
-.admin-info {
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+body{
+background:linear-gradient(180deg,#0b0b0b,#1b1b1b);
+background-attachment:fixed;
 }
 
-.btn-link, .btn-logout {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s;
+/* ========================= */
+/* BRILLO BOTONES */
+/* ========================= */
+
+button{
+position:relative;
+overflow:hidden;
 }
 
-.btn-link {
-    background: var(--success);
-    color: white;
+button::after{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+transition:0.6s;
 }
 
-.btn-logout {
-    background: rgba(255,255,255,0.1);
-    color: var(--light);
+button:hover::after{
+left:100%;
 }
+/* ========================= */
+/* NUMERO MARCADO CARTON */
+/* ========================= */
 
-.admin-main {
-    flex: 1;
-    padding: 30px;
-    overflow-y: auto;
+.numeroMarcado{
+background:#00c853 !important;
+color:white;
+transform:scale(1.1);
 }
+
+/* ========================= */
+/* EFECTO HOVER CARTON */
+/* ========================= */
 
-.admin-section {
-    display: none;
+.carton span:hover{
+background:#ffd700;
+color:black;
+cursor:pointer;
 }
+/* ========================= */
+/* ANIMACION NUMERO NUEVO */
+/* ========================= */
 
-.admin-section.active {
-    display: block;
-    animation: fadeIn 0.3s ease;
+.numeroNuevo{
+animation:popNumero 0.5s;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes popNumero{
+
+0%{
+transform:scale(0.5);
+opacity:0;
 }
 
-.admin-section h2 {
-    color: var(--accent);
-    margin-bottom: 30px;
-    font-size: 2rem;
+100%{
+transform:scale(1);
+opacity:1;
 }
 
-/* Control Grid */
-.control-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
 }
+/* ========================= */
+/* EFECTO GANADOR */
+/* ========================= */
 
-.control-box {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 15px;
-    padding: 25px;
+.ganadorEfecto{
+animation:ganadorFlash 1s infinite;
 }
+
+@keyframes ganadorFlash{
 
-.control-box h3 {
-    color: var(--secondary);
-    margin-bottom: 20px;
-    font-size: 1.2rem;
+0%{
+background:#ffd700;
 }
 
-.game-state {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--danger);
-    text-align: center;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
+50%{
+background:#ff9800;
 }
 
-.game-state.playing {
-    color: var(--success);
-    animation: pulse 1s infinite;
+100%{
+background:#ffd700;
 }
 
-.control-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
 }
+/* ========================= */
+/* EFECTO CARTON GANADOR */
+/* ========================= */
 
-.btn-control {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: var(--primary);
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s;
+.cartonGanador{
+border:3px solid #ffd700;
+box-shadow:0 0 20px #ffd700;
 }
+/* ========================= */
+/* LOBBY SALAS */
+/* ========================= */
 
-.btn-control:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+.salaItem{
+transition:0.3s;
 }
 
-.btn-start { background: var(--success); }
-.btn-pause { background: #f39c12; }
-.btn-reset { background: var(--danger); }
+.salaItem:hover{
+transform:scale(1.05);
+background:#1f1f1f;
+}
+/* ========================= */
+/* SOMBRA TARJETAS */
+/* ========================= */
 
-.countdown-set, .manual-input, .jackpot-edit, .line-prize {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
+section{
+box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 
-.countdown-set label, .jackpot-edit label, .line-prize label {
-    color: var(--light);
-    font-size: 0.9rem;
+/* ========================= */
+/* TARJETAS */
+/* ========================= */
+
+.packFichas,
+.torneoBox,
+.salaItem{
+box-shadow:0 0 10px rgba(0,0,0,0.6);
 }
+/* ========================= */
+/* ANIMACION POZO */
+/* ========================= */
 
-.countdown-set input, .manual-input input, .jackpot-edit input, .jackpot-edit select, .line-prize input {
-    padding: 10px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 8px;
-    background: rgba(0,0,0,0.3);
-    color: white;
+.pozoItem span{
+animation:pozoPulse 2s infinite;
 }
+
+@keyframes pozoPulse{
 
-.manual-input {
-    flex-direction: row;
-    gap: 10px;
+0%{
+transform:scale(1);
 }
 
-.manual-input input {
-    flex: 1;
+50%{
+transform:scale(1.1);
 }
 
-.manual-input button {
-    padding: 10px 20px;
-    background: var(--secondary);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
+100%{
+transform:scale(1);
 }
 
-.admin-current-number {
-    font-size: 4rem;
-    font-weight: 900;
-    color: var(--gold);
-    text-align: center;
-    margin: 20px 0;
-    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
 }
+/* ========================= */
+/* ANIMACION NUMEROS HISTORIAL */
+/* ========================= */
 
-.btn-save {
-    padding: 12px;
-    background: var(--success);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    font-weight: 700;
-    margin-top: 10px;
+.historialNumero{
+transition:0.3s;
 }
 
-.music-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.historialNumero:hover{
+transform:scale(1.2);
+background:#ffd700;
+color:black;
 }
+/* ========================= */
+/* RESPONSIVE EXTRA */
+/* ========================= */
 
-.music-controls input[type="file"] {
-    color: var(--light);
+@media (max-width:500px){
+
+.salaContainer{
+flex-direction:column;
 }
 
-.volume-admin {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+.carton{
+max-width:100%;
 }
 
-.volume-admin input[type="range"] {
-    flex: 1;
-    accent-color: var(--primary);
+.packFichas{
+width:100%;
 }
 
-/* Winners Section */
-.winners-section {
-    background: rgba(255,255,255,0.05);
-    border-radius: 15px;
-    padding: 25px;
-    margin-top: 20px;
+.salaItem{
+width:100%;
 }
 
-.winners-section h3 {
-    color: var(--gold);
-    margin-bottom: 20px;
 }
+/* ========================= */
+/* BOLILLERO GIRANDO */
+/* ========================= */
 
-.winners-list {
-    min-height: 100px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
+.bolilleroAnimado{
+position:relative;
+display:flex;
+gap:10px;
 }
 
-.winner-actions {
-    display: flex;
-    gap: 15px;
+.bolaAnimada{
+animation:giroBola 4s linear infinite;
 }
+
+@keyframes giroBola{
 
-.btn-verify, .btn-distribute {
-    flex: 1;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
+0%{
+transform:rotate(0deg);
 }
 
-.btn-verify {
-    background: var(--secondary);
-    color: white;
+100%{
+transform:rotate(360deg);
 }
 
-.btn-distribute {
-    background: var(--gold);
-    color: var(--dark);
 }
+/* ========================= */
+/* EFECTO LUCES CASINO */
+/* ========================= */
 
-/* Players Table */
-.players-table-container {
-    background: rgba(255,255,255,0.05);
-    border-radius: 15px;
-    overflow: hidden;
-    margin-bottom: 30px;
+h1,h2{
+text-shadow:
+0 0 5px #ffd700,
+0 0 10px #ffd700,
+0 0 20px #ff9800;
 }
 
-.players-table {
-    width: 100%;
-    border-collapse: collapse;
+/* ========================= */
+/* BORDES LUMINOSOS */
+/* ========================= */
+
+.carton{
+border:2px solid #ffd700;
 }
+/* ========================= */
+/* NUMERO ACTUAL DESTACADO */
+/* ========================= */
 
-.players-table th, .players-table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+#numeroActual{
+background:#111;
+padding:15px;
+border-radius:10px;
+border:2px solid #ffd700;
+box-shadow:0 0 15px #ffd700;
 }
+/* ========================= */
+/* CHAT BURBUJAS */
+/* ========================= */
 
-.players-table th {
-    background: rgba(108, 92, 231, 0.3);
-    color: var(--accent);
-    font-weight: 700;
+.mensaje{
+background:#222;
+padding:8px;
+border-radius:8px;
+display:inline-block;
+margin-bottom:5px;
 }
+/* ========================= */
+/* ANIMACION NUEVO MENSAJE */
+/* ========================= */
 
-.players-table tr:hover {
-    background: rgba(255,255,255,0.05);
+.mensajeNuevo{
+animation:mensajeFade 0.4s;
 }
+
+@keyframes mensajeFade{
 
-.status-online { color: var(--success); }
-.status-offline { color: var(--danger); }
-.status-blocked { color: #e84393; }
+0%{
+opacity:0;
+transform:translateY(10px);
+}
 
-.action-btn {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    margin-right: 5px;
+100%{
+opacity:1;
+transform:translateY(0);
 }
 
-.btn-kick { background: var(--danger); color: white; }
-.btn-block { background: #e84393; color: white; }
-.btn-msg { background: var(--primary); color: white; }
+}
+/* ========================= */
+/* HOVER NUMEROS TABLA */
+/* ========================= */
 
-/* Admin Chat */
-.chat-admin {
-    background: rgba(255,255,255,0.05);
-    border-radius: 15px;
-    padding: 20px;
+#tablaBingo span:hover{
+background:#ffd700;
+color:black;
+cursor:pointer;
+transform:scale(1.1);
 }
+/* ========================= */
+/* EFECTO TARJETAS */
+/* ========================= */
+
+.statBox:hover,
+.packFichas:hover,
+.torneoBox:hover{
+
+transform:translateY(-5px);
+transition:0.3s;
 
-.admin-chat-box {
-    height: 200px;
-    overflow-y: auto;
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 15px;
 }
+/* ========================= */
+/* BOTONES GRANDES MOVIL */
+/* ========================= */
 
-/* Settings */
-.settings-grid {
-    display: grid;
-    gap: 20px;
-    max-width: 600px;
+@media (max-width:600px){
+
+button{
+font-size:14px;
+padding:12px;
 }
 
-.setting-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
 }
+/* ========================= */
+/* CHAT RESPONSIVE */
+/* ========================= */
+
+@media (max-width:600px){
 
-.setting-item label {
-    color: var(--light);
-    font-weight: 600;
+#chatContainer{
+max-width:100%;
 }
 
-.setting-item input, .setting-item textarea {
-    padding: 12px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 8px;
-    background: rgba(0,0,0,0.3);
-    color: white;
-    font-family: inherit;
+.chatInput{
+flex-direction:column;
 }
 
-.btn-save-settings {
-    padding: 15px 30px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 20px;
 }
+/* ========================= */
+/* PERFIL RESPONSIVE */
+/* ========================= */
 
-/* Responsive */
-@media (max-width: 1200px) {
-    .game-main {
-        grid-template-columns: 1fr 1fr;
-    }
-    .chat-panel {
-        grid-column: 1 / -1;
-        height: 300px;
-    }
+@media (max-width:600px){
+
+.perfilContainer{
+flex-direction:column;
+align-items:center;
+text-align:center;
 }
 
-@media (max-width: 768px) {
-    .game-header {
-        grid-template-columns: 1fr;
-        gap: 20px;
-        text-align: center;
-    }
-    .game-main {
-        grid-template-columns: 1fr;
-    }
-    .admin-layout {
-        flex-direction: column;
-    }
-    .admin-sidebar {
-        width: 100%;
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    .login-options {
-        flex-direction: column;
-    }
-    .divider {
-        width: 100%;
-        height: 2px;
-    }
-}  
+}
