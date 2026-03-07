@@ -1,1143 +1,880 @@
-/* ========================= */
-/* RESET GENERAL */
-/* ========================= */
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-background:#0e0e0e;
-color:white;
-min-height:100vh;
-}
-
-/* ========================= */
-/* HEADER */
-/* ========================= */
-
-#mainHeader{
-background:#1b1b1b;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-}
-
-.logoContainer h1{
-color:#ffd700;
-font-size:24px;
-}
-
-/* ========================= */
-/* NAV */
-/* ========================= */
-
-.mainNav ul{
-list-style:none;
-display:flex;
-gap:20px;
-flex-wrap:wrap;
-}
-
-.mainNav a{
-color:white;
-text-decoration:none;
-font-size:16px;
-transition:0.3s;
-}
-
-.mainNav a:hover{
-color:#ffd700;
-}
-
-/* ========================= */
-/* MAIN */
-/* ========================= */
-
-#mainContainer{
-padding:20px;
-}
-
-/* ========================= */
-/* SECTIONS */
-/* ========================= */
-
-section{
-margin-bottom:40px;
-background:#1a1a1a;
-padding:20px;
-border-radius:10px;
-}
-
-/* ========================= */
-/* TITULOS */
-/* ========================= */
-
-h2{
-margin-bottom:15px;
-color:#ffd700;
-}
-/* ========================= */
-/* BOTONES */
-/* ========================= */
-
-button{
-background:#ffd700;
-border:none;
-padding:10px 18px;
-border-radius:6px;
-cursor:pointer;
-font-weight:bold;
-transition:0.3s;
-}
-
-button:hover{
-background:#ffb700;
-transform:scale(1.05);
-}
-
-/* ========================= */
-/* INPUTS */
-/* ========================= */
-
-input{
-padding:10px;
-border-radius:5px;
-border:none;
-width:100%;
-margin-top:5px;
-margin-bottom:10px;
-}
-
-textarea{
-padding:10px;
-border-radius:5px;
-border:none;
-width:100%;
-}
-
-/* ========================= */
-/* FORMULARIOS */
-/* ========================= */
-
-form{
-max-width:400px;
-}
-
-.campo{
-margin-bottom:15px;
-}
-/* ========================= */
-/* CARTONES */
-/* ========================= */
-
-.carton{
-background:#111;
-padding:10px;
-border-radius:8px;
-margin-top:10px;
-max-width:300px;
-}
-
-.fila{
-display:flex;
-justify-content:space-between;
-margin-bottom:5px;
-}
-
-.fila span{
-background:#222;
-padding:10px;
-border-radius:4px;
-width:40px;
-text-align:center;
-font-weight:bold;
-}
-
-/* ========================= */
-/* BOLILLERO */
-/* ========================= */
-
-#numeroActual{
-font-size:40px;
-font-weight:bold;
-color:#ffd700;
-margin:10px 0;
-}
-
-#bolillasCantadas{
-display:flex;
-flex-wrap:wrap;
-gap:5px;
-}
-
-.bola{
-background:#333;
-padding:8px;
-border-radius:50%;
-width:35px;
-height:35px;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-/* ========================= */
-/* CHAT */
-/* ========================= */
-
-#chatContainer{
-background:#111;
-padding:15px;
-border-radius:8px;
-max-width:500px;
-}
-
-#chatMensajes{
-max-height:200px;
-overflow-y:auto;
-margin-bottom:10px;
-}
-
-.mensaje{
-margin-bottom:5px;
-}
-
-.chatInput{
-display:flex;
-gap:10px;
-}
-
-.chatInput input{
-flex:1;
+/* ===== RESET BÁSICO ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
 }
 
-/* ========================= */
-/* LISTA JUGADORES */
-/* ========================= */
-
-#listaJugadores{
-list-style:none;
-margin-top:10px;
-}
-
-.jugador{
-padding:8px;
-background:#111;
-margin-bottom:5px;
-border-radius:5px;
-}
-/* ========================= */
-/* RESPONSIVE TABLET */
-/* ========================= */
-
-@media (max-width:900px){
-
-.mainNav ul{
-flex-direction:column;
-gap:10px;
-}
-
-#mainHeader{
-flex-direction:column;
-align-items:flex-start;
-}
-
-}
-
-/* ========================= */
-/* RESPONSIVE CELULAR */
-/* ========================= */
-
-@media (max-width:600px){
-
-section{
-padding:15px;
-}
-
-.fila span{
-width:30px;
-padding:8px;
-font-size:12px;
-}
-
-#numeroActual{
-font-size:30px;
-}
-
-button{
-padding:8px 12px;
-}
-
-}
-/* ========================= */
-/* PANEL SALA */
-/* ========================= */
-
-.salaContainer{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
-}
-
-.panelBolillero{
-background:#111;
-padding:20px;
-border-radius:10px;
-flex:1;
-min-width:250px;
-}
-
-.panelPozo{
-background:#111;
-padding:20px;
-border-radius:10px;
-flex:1;
-min-width:250px;
-}
-
-/* ========================= */
-/* POZO */
-/* ========================= */
-
-.pozoBox{
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
-.pozoItem{
-background:#222;
-padding:12px;
-border-radius:6px;
-text-align:center;
+body {
+  background: #1a1a1a;
+  color: #fff;
+  line-height: 1.5;
 }
 
-.pozoItem span{
-font-size:20px;
-font-weight:bold;
-color:#ffd700;
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 15px 30px;
+  border-bottom: 3px solid #f39c12;
 }
-/* ========================= */
-/* TIENDA */
-/* ========================= */
 
-.tiendaContainer{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
+.logo {
+  font-size: 2rem;
+  color: #f39c12;
 }
 
-.packFichas{
-background:#111;
-padding:20px;
-border-radius:10px;
-text-align:center;
-width:150px;
+.jackpot {
+  background: #222;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-align: center;
 }
 
-.packFichas p{
-margin-bottom:10px;
+.jackpot span {
+  display: block;
+  font-size: 0.9rem;
+  color: #aaa;
 }
 
-/* ========================= */
-/* PROMOCIONES */
-/* ========================= */
-
-.promoContainer{
-display:flex;
-flex-wrap:wrap;
-gap:15px;
-}
-
-.promoItem{
-background:#222;
-padding:15px;
-border-radius:8px;
-flex:1;
-min-width:150px;
-text-align:center;
+#jackpotAmount {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f39c12;
 }
-/* ========================= */
-/* PERFIL */
-/* ========================= */
 
-.perfilContainer{
-display:flex;
-gap:20px;
-flex-wrap:wrap;
+/* ===== LOGIN SCREEN ===== */
+.loginScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
 }
 
-.avatarJugador img{
-width:80px;
-height:80px;
-border-radius:50%;
+.loginScreen input {
+  padding: 10px;
+  margin: 10px 0;
+  width: 250px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
 }
 
-.datosJugador p{
-margin-bottom:8px;
+.loginScreen button {
+  padding: 10px 20px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
-
-/* ========================= */
-/* LOGROS */
-/* ========================= */
 
-.logrosContainer{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
+.loginScreen button:hover {
+  background: #e67e22;
 }
 
-.logroItem{
-background:#222;
-padding:10px;
-border-radius:6px;
+/* ===== GAME SCREEN ===== */
+.gameScreen {
+  padding: 20px;
 }
-/* ========================= */
-/* RANKING */
-/* ========================= */
 
-#tablaRanking{
-width:100%;
-border-collapse:collapse;
+.topPanel {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-#tablaRanking th{
-background:#333;
-padding:10px;
+.currentNumberPanel, .countdownPanel {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
 }
 
-#tablaRanking td{
-background:#222;
-padding:10px;
-text-align:center;
+#currentNumber, #countdownTimer {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #f39c12;
 }
 
-/* ========================= */
-/* HISTORIAL */
-/* ========================= */
-
-.tablaHistorial{
-width:100%;
-border-collapse:collapse;
+/* ===== BALL MACHINE ===== */
+.ballMachine {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.tablaHistorial th{
-background:#333;
-padding:10px;
+.ball {
+  background: #f39c12;
+  color: #111;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 5px;
+  transition: 0.3s;
 }
 
-.tablaHistorial td{
-background:#222;
-padding:10px;
+.ball:hover {
+  transform: scale(1.1);
 }
-/* ========================= */
-/* ANIMACION BOLILLAS */
-/* ========================= */
 
-.bolaAnimada{
-width:40px;
-height:40px;
-border-radius:50%;
-background:#ffd700;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-animation:flotar 3s infinite;
+/* ===== NUMBERS HISTORY ===== */
+.numbersHistory {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
-
-@keyframes flotar{
 
-0%{
-transform:translateY(0);
+#numbersList span {
+  display: inline-block;
+  background: #333;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 5px;
 }
 
-50%{
-transform:translateY(-10px);
+/* ===== CARDS SECTION ===== */
+.cardsSection {
+  margin-bottom: 20px;
+}
+
+#cardsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-100%{
-transform:translateY(0);
+.carton {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
 }
 
+.fila {
+  display: flex;
+  justify-content: space-around;
+  margin: 5px 0;
 }
 
-.bolilleroAnimado{
-display:flex;
-gap:10px;
-margin-top:10px;
+.fila span {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  background: #333;
+  border-radius: 5px;
+  line-height: 35px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
 }
-/* ========================= */
-/* GANADOR */
-/* ========================= */
 
-.pantallaGanador{
-background:#111;
-padding:40px;
-border-radius:10px;
-text-align:center;
+.fila span.marcado {
+  background: #f39c12;
+  color: #111;
 }
 
-.pantallaGanador h1{
-font-size:40px;
-color:#ffd700;
-margin-bottom:20px;
+/* ===== CHAT SECTION ===== */
+.chatSection {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 400px;
 }
 
-.premioGanador{
-font-size:24px;
-margin-bottom:20px;
+#chatMessages {
+  height: 200px;
+  overflow-y: auto;
+  margin-bottom: 10px;
 }
-/* ========================= */
-/* SALAS */
-/* ========================= */
 
-.salasContainer{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
+#chatMessages .mensaje {
+  padding: 5px;
+  margin-bottom: 5px;
+  background: #333;
+  border-radius: 5px;
 }
 
-.salaItem{
-background:#111;
-padding:20px;
-border-radius:10px;
-width:200px;
-text-align:center;
+.chatInput {
+  display: flex;
+  gap: 5px;
 }
 
-.salaItem h3{
-margin-bottom:10px;
+.chatInput input {
+  flex: 1;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
 }
-/* ========================= */
-/* AMIGOS */
-/* ========================= */
 
-.amigosContainer{
-display:flex;
-flex-direction:column;
-gap:10px;
+.chatInput button {
+  padding: 5px 10px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #111;
+  font-weight: bold;
 }
-
-.amigoItem{
-background:#222;
-padding:10px;
-border-radius:6px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+/* ===== ADMIN PANEL ===== */
+.adminPanel {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
-/* ========================= */
-/* NOTIFICACIONES */
-/* ========================= */
 
-#notificacionesContainer{
-display:flex;
-flex-direction:column;
-gap:10px;
+.adminPanel button {
+  flex: 1;
+  padding: 10px;
+  background: #f39c12;
+  color: #111;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.notificacion{
-background:#222;
-padding:10px;
-border-radius:6px;
+.adminPanel button:hover {
+  background: #e67e22;
 }
-/* ========================= */
-/* CONTADOR PARTIDA */
-/* ========================= */
 
-.contadorInicio{
-text-align:center;
-font-size:30px;
-margin-top:10px;
+.adminJackpot {
+  margin-top: 10px;
+  display: flex;
+  gap: 5px;
 }
 
-#contadorPartida{
-font-size:50px;
-color:#ffd700;
+.adminJackpot input {
+  flex: 1;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
 }
-/* ========================= */
-/* TABLA BINGO NUMEROS */
-/* ========================= */
 
-#tablaBingo{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-top:10px;
+.adminJackpot button {
+  padding: 5px 10px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-#tablaBingo div{
-background:#111;
-padding:10px;
-border-radius:8px;
-display:flex;
-flex-direction:column;
-align-items:center;
+/* ===== PANEL POZO ===== */
+.panelPozo {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
-#tablaBingo span{
-background:#222;
-margin:3px;
-padding:6px;
-border-radius:4px;
-width:30px;
-text-align:center;
-font-size:12px;
+.pozoBox {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
 }
 
-#tablaBingo h3{
-margin-bottom:5px;
-color:#ffd700;
+.pozoItem {
+  text-align: center;
 }
-/* ========================= */
-/* HISTORIAL NUMEROS */
-/* ========================= */
 
-#historialNumeros{
-display:flex;
-flex-wrap:wrap;
-gap:6px;
-margin-top:10px;
+.pozoItem p {
+  font-size: 0.9rem;
+  color: #aaa;
 }
 
-.historialNumero{
-background:#333;
-padding:8px;
-border-radius:6px;
-font-weight:bold;
+.pozoItem span {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #f39c12;
 }
-/* ========================= */
-/* LISTA ESPERA */
-/* ========================= */
 
-.listaEspera{
-list-style:none;
-margin-top:10px;
+/* ===== ESTADÍSTICAS ===== */
+.estadisticasContainer {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
 }
 
-.listaEspera li{
-background:#222;
-padding:10px;
-border-radius:6px;
-margin-bottom:5px;
+.statBox {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
 }
-
-/* ========================= */
-/* EVENTOS SALA */
-/* ========================= */
 
-.feedActividad{
-display:flex;
-flex-direction:column;
-gap:8px;
+.statBox p {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 5px;
 }
 
-.evento{
-background:#222;
-padding:10px;
-border-radius:6px;
+.statBox span {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #f39c12;
 }
-/* ========================= */
-/* MODERACION */
-/* ========================= */
 
-.moderacionContainer{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
+/* ===== RANKING ===== */
+#tablaRanking {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
-.btnModeracion{
-background:#ff4c4c;
-color:white;
-padding:10px;
-border-radius:6px;
-border:none;
+#tablaRanking th, #tablaRanking td {
+  border: 1px solid #333;
+  padding: 10px;
+  text-align: center;
 }
 
-.btnModeracion:hover{
-background:#d93636;
+#tablaRanking th {
+  background: #111;
+  color: #f39c12;
 }
-/* ========================= */
-/* CONFIGURACION SALA */
-/* ========================= */
 
-#configSalaForm{
-display:flex;
-flex-direction:column;
-gap:10px;
-max-width:300px;
+#tablaRanking tbody tr:nth-child(even) {
+  background: #1f1f1f;
 }
 
-/* ========================= */
-/* SOPORTE */
-/* ========================= */
-
-#formSoporte{
-display:flex;
-flex-direction:column;
-gap:10px;
-max-width:400px;
+/* ===== HISTORIAL DE NÚMEROS ===== */
+#historialNumeros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
 }
-/* ========================= */
-/* RANKING SEMANAL */
-/* ========================= */
 
-.rankingLista{
-margin-top:10px;
-padding-left:20px;
+.historialNumero {
+  background: #333;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
-.rankingLista li{
-margin-bottom:6px;
+/* ===== PANEL PREMIOS ===== */
+.premiosContainer {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
 }
-
-/* ========================= */
-/* TORNEOS */
-/* ========================= */
 
-.torneosContainer{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
+.premioItem {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
 }
 
-.torneoBox{
-background:#111;
-padding:20px;
-border-radius:10px;
-width:200px;
-text-align:center;
+.premioItem h3 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #aaa;
 }
-/* ========================= */
-/* CHAT HISTORIAL */
-/* ========================= */
 
-.chatHistorialContainer{
-background:#111;
-padding:15px;
-border-radius:8px;
-max-height:250px;
-overflow-y:auto;
+.premioItem p {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #f39c12;
 }
 
-.chatLinea{
-margin-bottom:8px;
+/* ===== HISTORIAL CHAT ===== */
+.chatHistorialContainer {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 20px;
 }
 
-.usuarioChat{
-color:#ffd700;
-margin-right:5px;
+.chatLinea {
+  margin-bottom: 5px;
 }
-/* ========================= */
-/* INVITACIONES */
-/* ========================= */
 
-.invitacionesContainer{
-display:flex;
-flex-direction:column;
-gap:10px;
+.usuarioChat {
+  font-weight: bold;
+  color: #f39c12;
 }
 
-.invitacionItem{
-background:#222;
-padding:10px;
-border-radius:6px;
-display:flex;
-flex-direction:column;
-gap:5px;
+.mensajeChat {
+  margin-left: 5px;
 }
-/* ========================= */
-/* ESTADISTICAS */
-/* ========================= */
 
-.estadisticasContainer{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
+/* ===== MÚSICA Y AUDIO ===== */
+.musicControls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-.statBox{
-background:#111;
-padding:20px;
-border-radius:10px;
-text-align:center;
-min-width:120px;
+.musicControls button {
+  padding: 8px 15px;
+  background: #f39c12;
+  color: #111;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.statBox span{
-font-size:20px;
-color:#ffd700;
+.musicControls button:hover {
+  background: #e67e22;
 }
-/* ========================= */
-/* FOOTER */
-/* ========================= */
 
-#mainFooter{
-background:#1b1b1b;
-padding:20px;
-text-align:center;
-margin-top:40px;
+/* ===== CONFIGURACIÓN DE USUARIO ===== */
+#configForm {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
 }
 
-.footerContainer p{
-margin-bottom:5px;
+#configForm label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: #aaa;
 }
 
-/* ========================= */
-/* SCROLLBAR */
-/* ========================= */
-
-::-webkit-scrollbar{
-width:6px;
+#configForm select, #configForm input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  margin-bottom: 10px;
 }
 
-::-webkit-scrollbar-thumb{
-background:#444;
-border-radius:10px;
+#configForm button {
+  padding: 10px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
 }
-/* ========================= */
-/* EFECTO CASINO FONDO */
-/* ========================= */
 
-body{
-background:linear-gradient(180deg,#0b0b0b,#1b1b1b);
-background-attachment:fixed;
+#configForm button:hover {
+  background: #e67e22;
 }
-
-/* ========================= */
-/* BRILLO BOTONES */
-/* ========================= */
-
-button{
-position:relative;
-overflow:hidden;
+/* ===== TIENDA DE CARTONES ===== */
+.tiendaContainer {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-button::after{
-content:"";
-position:absolute;
-top:0;
-left:-100%;
-width:100%;
-height:100%;
-background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
-transition:0.6s;
+.packCartones {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  flex: 1 1 120px;
 }
 
-button:hover::after{
-left:100%;
+.packCartones p {
+  margin: 5px 0;
+  color: #f39c12;
+  font-weight: bold;
 }
-/* ========================= */
-/* NUMERO MARCADO CARTON */
-/* ========================= */
 
-.numeroMarcado{
-background:#00c853 !important;
-color:white;
-transform:scale(1.1);
+.packCartones button {
+  padding: 8px 12px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
-
-/* ========================= */
-/* EFECTO HOVER CARTON */
-/* ========================= */
 
-.carton span:hover{
-background:#ffd700;
-color:black;
-cursor:pointer;
+.packCartones button:hover {
+  background: #e67e22;
 }
-/* ========================= */
-/* ANIMACION NUMERO NUEVO */
-/* ========================= */
 
-.numeroNuevo{
-animation:popNumero 0.5s;
+/* ===== LOGROS ===== */
+.logrosContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-@keyframes popNumero{
-
-0%{
-transform:scale(0.5);
-opacity:0;
+.logroItem {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  color: #f39c12;
+  font-weight: bold;
+  text-align: center;
+  flex: 1 1 120px;
 }
 
-100%{
-transform:scale(1);
-opacity:1;
+/* ===== AMIGOS ===== */
+.amigosContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
+.amigoItem {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 1 150px;
 }
-/* ========================= */
-/* EFECTO GANADOR */
-/* ========================= */
 
-.ganadorEfecto{
-animation:ganadorFlash 1s infinite;
+.amigoItem button {
+  padding: 5px 10px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 }
-
-@keyframes ganadorFlash{
 
-0%{
-background:#ffd700;
+.amigoItem button:hover {
+  background: #e67e22;
 }
 
-50%{
-background:#ff9800;
+/* ===== INVITACIONES ===== */
+.invitacionesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-100%{
-background:#ffd700;
+.invitacionItem {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.invitacionItem button {
+  padding: 5px 8px;
+  margin-left: 5px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 }
-/* ========================= */
-/* EFECTO CARTON GANADOR */
-/* ========================= */
 
-.cartonGanador{
-border:3px solid #ffd700;
-box-shadow:0 0 20px #ffd700;
+.invitacionItem button:hover {
+  background: #e67e22;
 }
-/* ========================= */
-/* LOBBY SALAS */
-/* ========================= */
 
-.salaItem{
-transition:0.3s;
+/* ===== LISTA DE ESPERA ===== */
+.listaEspera {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  list-style: none;
 }
 
-.salaItem:hover{
-transform:scale(1.05);
-background:#1f1f1f;
+.listaEspera li {
+  padding: 5px;
+  border-bottom: 1px solid #333;
+  color: #f39c12;
 }
-/* ========================= */
-/* SOMBRA TARJETAS */
-/* ========================= */
 
-section{
-box-shadow:0 0 10px rgba(0,0,0,0.5);
+/* ===== TORNEOS ===== */
+.torneosContainer {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-/* ========================= */
-/* TARJETAS */
-/* ========================= */
-
-.packFichas,
-.torneoBox,
-.salaItem{
-box-shadow:0 0 10px rgba(0,0,0,0.6);
+.torneoBox {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  flex: 1 1 150px;
 }
-/* ========================= */
-/* ANIMACION POZO */
-/* ========================= */
 
-.pozoItem span{
-animation:pozoPulse 2s infinite;
+.torneoBox h3 {
+  margin-bottom: 5px;
+  color: #f39c12;
 }
-
-@keyframes pozoPulse{
 
-0%{
-transform:scale(1);
+.torneoBox p {
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #f39c12;
 }
 
-50%{
-transform:scale(1.1);
+.torneoBox button {
+  padding: 8px 12px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-100%{
-transform:scale(1);
+.torneoBox button:hover {
+  background: #e67e22;
 }
 
+/* ===== PANTALLA DE ESPERA ===== */
+.contadorInicio {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
 }
-/* ========================= */
-/* ANIMACION NUMEROS HISTORIAL */
-/* ========================= */
 
-.historialNumero{
-transition:0.3s;
+#contadorPartida {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #f39c12;
 }
 
-.historialNumero:hover{
-transform:scale(1.2);
-background:#ffd700;
-color:black;
+/* ===== PERFIL DE JUGADOR ===== */
+.perfilContainer {
+  display: flex;
+  gap: 15px;
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  align-items: center;
 }
-/* ========================= */
-/* RESPONSIVE EXTRA */
-/* ========================= */
 
-@media (max-width:500px){
-
-.salaContainer{
-flex-direction:column;
+.avatarJugador img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #f39c12;
 }
 
-.carton{
-max-width:100%;
+.datosJugador p {
+  margin: 5px 0;
+  color: #f39c12;
 }
-
-.packFichas{
-width:100%;
+/* ===== MODERACIÓN ===== */
+.moderacionContainer {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.salaItem{
-width:100%;
+.btnModeracion {
+  padding: 8px 12px;
+  background: #c0392b;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff;
 }
 
+.btnModeracion:hover {
+  background: #e74c3c;
 }
-/* ========================= */
-/* BOLILLERO GIRANDO */
-/* ========================= */
 
-.bolilleroAnimado{
-position:relative;
-display:flex;
-gap:10px;
+/* ===== CONTROL DE BOTS ===== */
+.botControl {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.bolaAnimada{
-animation:giroBola 4s linear infinite;
+.botControl button {
+  padding: 8px 12px;
+  background: #2980b9;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff;
 }
 
-@keyframes giroBola{
-
-0%{
-transform:rotate(0deg);
+.botControl button:hover {
+  background: #3498db;
 }
 
-100%{
-transform:rotate(360deg);
+/* ===== ESTADÍSTICAS AVANZADAS ===== */
+.statsGrid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
+.statItem {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  flex: 1 1 120px;
+  color: #f39c12;
+  font-weight: bold;
 }
-/* ========================= */
-/* EFECTO LUCES CASINO */
-/* ========================= */
 
-h1,h2{
-text-shadow:
-0 0 5px #ffd700,
-0 0 10px #ffd700,
-0 0 20px #ff9800;
+/* ===== RANKING SEMANAL ===== */
+.rankingLista {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  list-style: decimal;
+  color: #f39c12;
 }
-
-/* ========================= */
-/* BORDES LUMINOSOS */
-/* ========================= */
 
-.carton{
-border:2px solid #ffd700;
+.rankingLista li {
+  padding: 5px;
+  border-bottom: 1px solid #333;
 }
-/* ========================= */
-/* NUMERO ACTUAL DESTACADO */
-/* ========================= */
 
-#numeroActual{
-background:#111;
-padding:15px;
-border-radius:10px;
-border:2px solid #ffd700;
-box-shadow:0 0 15px #ffd700;
+/* ===== PUBLICIDAD / PROMOCIONES ===== */
+.promoContainer {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
-/* ========================= */
-/* CHAT BURBUJAS */
-/* ========================= */
 
-.mensaje{
-background:#222;
-padding:8px;
-border-radius:8px;
-display:inline-block;
-margin-bottom:5px;
+.promoItem {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  color: #f39c12;
+  flex: 1 1 150px;
 }
-/* ========================= */
-/* ANIMACION NUEVO MENSAJE */
-/* ========================= */
 
-.mensajeNuevo{
-animation:mensajeFade 0.4s;
+/* ===== CONFIGURACIÓN DE SALA ===== */
+#configSalaForm {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-@keyframes mensajeFade{
-
-0%{
-opacity:0;
-transform:translateY(10px);
+#configSalaForm label {
+  color: #f39c12;
+  font-weight: bold;
 }
 
-100%{
-opacity:1;
-transform:translateY(0);
+#configSalaForm input,
+#configSalaForm select,
+#configSalaForm button {
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
 }
 
+#configSalaForm button {
+  background: #f39c12;
+  font-weight: bold;
+  cursor: pointer;
 }
-/* ========================= */
-/* HOVER NUMEROS TABLA */
-/* ========================= */
 
-#tablaBingo span:hover{
-background:#ffd700;
-color:black;
-cursor:pointer;
-transform:scale(1.1);
+#configSalaForm button:hover {
+  background: #e67e22;
 }
-/* ========================= */
-/* EFECTO TARJETAS */
-/* ========================= */
-
-.statBox:hover,
-.packFichas:hover,
-.torneoBox:hover{
 
-transform:translateY(-5px);
-transition:0.3s;
-
+/* ===== ANIMACIÓN BOLILLERO ===== */
+.bolilleroAnimado {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
-/* ========================= */
-/* BOTONES GRANDES MOVIL */
-/* ========================= */
-
-@media (max-width:600px){
 
-button{
-font-size:14px;
-padding:12px;
+.bolaAnimada {
+  width: 50px;
+  height: 50px;
+  background: #f39c12;
+  color: #222;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  animation: bounce 1s infinite;
 }
 
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
-/* ========================= */
-/* CHAT RESPONSIVE */
-/* ========================= */
 
-@media (max-width:600px){
-
-#chatContainer{
-max-width:100%;
+/* ===== PANTALLA GANADOR ===== */
+.pantallaGanador {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #222;
+  color: #f39c12;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  display: none;
+  z-index: 999;
 }
 
-.chatInput{
-flex-direction:column;
+.pantallaGanador button {
+  padding: 8px 12px;
+  margin-top: 10px;
+  background: #f39c12;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
+.pantallaGanador button:hover {
+  background: #e67e22;
 }
-/* ========================= */
-/* PERFIL RESPONSIVE */
-/* ========================= */
-
-@media (max-width:600px){
 
-.perfilContainer{
-flex-direction:column;
-align-items:center;
-text-align:center;
+/* ===== SISTEMA DE NOTIFICACIONES ===== */
+.feedActividad {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
+.evento {
+  padding: 5px 0;
+  border-bottom: 1px solid #333;
+  color: #f39c12;
 }
