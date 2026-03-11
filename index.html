@@ -522,6 +522,33 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
         }
+
+        /* Auto Winner Notification */
+        .auto-winner-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%);
+            padding: 20px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            z-index: 4000;
+            animation: slideDown 0.5s ease;
+            text-align: center;
+            border: 2px solid var(--accent);
+        }
+
+        .auto-winner-notification h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .auto-winner-notification p {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -584,7 +611,7 @@
                         🎨 3 Estilos de Cartón Disponibles<br>
                         👥 Sala compartida con todos los jugadores
                     </div>
-                    <div style="margin-top:10px;opacity:0.5;font-size:0.8rem">v6.0 Firebase Live - Juego Responsable</div>
+                    <div style="margin-top:10px;opacity:0.5;font-size:0.8rem">v7.0 Firebase Live - Juego Responsable</div>
                 </div>
             </div>
         </div>
@@ -721,6 +748,10 @@
                         <span id="speedValue" style="color:var(--accent)">3 segundos</span>
                     </div>
                     <input type="range" id="speedControl" min="1" max="10" value="3" style="width:100%;height:8px;border-radius:4px;background:rgba(255,255,255,0.1);outline:none;-webkit-appearance:none" oninput="updateSpeed(this.value)">
+                </div>
+                <div class="mt-10" style="display:flex;align-items:center;gap:10px">
+                    <input type="checkbox" id="autoWinnerEnabled" checked style="width:20px;height:20px">
+                    <label for="autoWinnerEnabled" style="font-size:0.9rem;cursor:pointer">Ganador Automático (si no se otorga manualmente)</label>
                 </div>
             </div>
 
@@ -941,7 +972,8 @@
             INITIAL_COINS_PREMIUM: 25000,
             LINE_PERCENTAGE: 20,
             BINGO_PERCENTAGE: 80,
-            MAX_LINE_WINNERS: 3
+            MAX_LINE_WINNERS: 3,
+            AUTO_WINNER_DELAY: 10000 // 10 segundos para asignar ganador automático
         };
 
         // ==================== ESTADO GLOBAL ====================
@@ -964,27 +996,112 @@
                 bingoWinner: null,
                 claimedLines: 0,
                 bingoClaimed: false,
-                prizePercentages: { line: 20, bingo: 80 }
+                prizePercentages: { line: 20, bingo: 80 },
+                autoWinnerEnabled: true
             },
             chat: [],
             chatMode: 'public',
             settings: { autoMark: false, voice: true, cardStyle: 'classic' },
             stats: { cardsSold: 0, numbersCalled: 0 },
-            timers: { game: null, countdown: null },
+            timers: { game: null, countdown: null, autoWinner: null },
             premiumCodes: [],
             potentialWinners: [],
             roomId: 'main-room',
             audioContext: null,
-            welcomeShown: false
+            welcomeShown: false,
+            speechQueue: [],
+            isSpeaking: false,
+            lastProcessedChatTimestamp: 0
         };
 
         const synth = window.speechSynthesis;
 
-        // ==================== INICIALIZACIÓN DE AUDIO ====================
+        // ==================== SISTEMA DE VOZ MEJORADO CON COLA ====================
         function initAudio() {
             if (!App.audioContext) {
                 App.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
+        }
+
+        // Sistema de cola de voz para evitar que se tilde
+        function speak(text, priority = false) {
+            if (!App.settings.voice || !synth) return;
+            
+            // Si es prioritario, limpiar cola actual
+            if (priority) {
+                synth.cancel();
+                App.speechQueue = [];
+                App.isSpeaking = false;
+            }
+            
+            // Agregar a la cola
+            App.speechQueue.push(text);
+            processSpeechQueue();
+        }
+
+        function processSpeechQueue() {
+            if (App.isSpeaking || App.speechQueue.length === 0) return;
+            
+            App.isSpeaking = true;
+            const text = App.speechQueue.shift();
+            
+            // Dividir texto largo en chunks para mejor manejo
+            const chunks = splitTextIntoChunks(text, 150); // 150 caracteres por chunk
+            
+            speakChunks(chunks, 0);
+        }
+
+        function splitTextIntoChunks(text, maxLength) {
+            if (text.length <= maxLength) return [text];
+            
+            const chunks = [];
+            const sentences = text.match(/[^\.!\?]+[\.!\?]+|[^\.!\?]+$/g) || [text];
+            
+            let currentChunk = '';
+            for (const sentence of sentences) {
+                if ((currentChunk + sentence).length <= maxLength) {
+                    currentChunk += sentence;
+                } else {
+                    if (currentChunk) chunks.push(currentChunk.trim());
+                    currentChunk = sentence;
+                }
+            }
+            if (currentChunk) chunks.push(currentChunk.trim());
+            
+            return chunks;
+        }
+
+        function speakChunks(chunks, index) {
+            if (index >= chunks.length) {
+                App.isSpeaking = false;
+                setTimeout(() => processSpeechQueue(), 100);
+                return;
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(chunks[index]);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            
+            // Seleccionar voz en español
+            const voices = synth.getVoices();
+            const spanishVoice = voices.find(v => v.lang.includes('es'));
+            if (spanishVoice) {
+                utterance.voice = spanishVoice;
+            }
+            
+            utterance.onend = () => {
+                setTimeout(() => speakChunks(chunks, index + 1), 50);
+            };
+            
+            utterance.onerror = (e) => {
+                console.warn('Error de voz:', e);
+                App.isSpeaking = false;
+                setTimeout(() => processSpeechQueue(), 200);
+            };
+            
+            synth.speak(utterance);
         }
 
         // ==================== UTILIDADES ====================
@@ -997,7 +1114,6 @@
             toast.innerHTML = `<span style="font-size:1.2rem">${icons[type]}</span><span>${msg}</span>`;
             container.appendChild(toast);
             
-            // Reproducir sonido para notificaciones importantes
             if (type === 'success' || type === 'error') {
                 playNotificationSound(type);
             }
@@ -1019,9 +1135,9 @@
             gainNode.connect(App.audioContext.destination);
             
             if (type === 'success') {
-                oscillator.frequency.setValueAtTime(523.25, App.audioContext.currentTime); // C5
-                oscillator.frequency.setValueAtTime(659.25, App.audioContext.currentTime + 0.1); // E5
-                oscillator.frequency.setValueAtTime(783.99, App.audioContext.currentTime + 0.2); // G5
+                oscillator.frequency.setValueAtTime(523.25, App.audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(659.25, App.audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(783.99, App.audioContext.currentTime + 0.2);
             } else {
                 oscillator.frequency.setValueAtTime(200, App.audioContext.currentTime);
                 oscillator.frequency.exponentialRampToValueAtTime(100, App.audioContext.currentTime + 0.3);
@@ -1039,32 +1155,6 @@
             if (amount === Infinity || amount === 'Infinity') return '∞';
             return '$' + amount.toLocaleString('es-ES');
         };
-
-        // ==================== SISTEMA DE VOZ MEJORADO ====================
-        function speak(text, priority = false) {
-            if (!App.settings.voice || !synth) return;
-            
-            // Cancelar utterances anteriores si es prioritario
-            if (priority) {
-                synth.cancel();
-            }
-            
-            // Crear utterance
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'es-ES';
-            utterance.rate = 0.9;
-            utterance.pitch = 1;
-            utterance.volume = 1;
-            
-            // Seleccionar voz en español si está disponible
-            const voices = synth.getVoices();
-            const spanishVoice = voices.find(v => v.lang.includes('es'));
-            if (spanishVoice) {
-                utterance.voice = spanishVoice;
-            }
-            
-            synth.speak(utterance);
-        }
 
         // ==================== SISTEMA DE LOGIN Y CÓDIGOS ====================
         function setLoginMode(mode) {
@@ -1156,7 +1246,6 @@
 
         // ==================== LOGIN ====================
         async function login() {
-            // Inicializar audio en interacción de usuario
             initAudio();
             
             const name = $('playerName').value.trim();
@@ -1224,9 +1313,11 @@
             document.body.appendChild(overlay);
             document.body.appendChild(message);
             
-            // Reproducir mensaje de bienvenida con voz
-            const welcomeText = `¡Bienvenido ${playerName} a Bingo Pro Live! Has recibido ${coins} fichas. Recuerda, juega responsablemente. El juego compulsivo puede causar adicción. Diviértete y buena suerte.`;
-            speak(welcomeText, true);
+            // Usar el nuevo sistema de voz
+            setTimeout(() => {
+                const welcomeText = `¡Bienvenido ${playerName} a Bingo Pro Live! Has recibido ${coins} fichas. Recuerda, juega responsablemente. El juego compulsivo puede causar adicción. Diviértete y buena suerte.`;
+                speak(welcomeText, true);
+            }, 500);
             
             App.welcomeShown = true;
         }
@@ -1255,7 +1346,6 @@
             initAdminPanel();
             setupFirebaseListeners();
             
-            // Mensaje de bienvenida para admin
             showWelcomeMessage(name, false);
             
             updateConnectionStatus('online');
@@ -1296,7 +1386,6 @@
             $('premiumBadge').classList.remove('hidden');
             $('playerAvatar').classList.add('premium');
             
-            // Mostrar mensaje de bienvenida
             showWelcomeMessage(name, true);
             
             updateConnectionStatus('online');
@@ -1343,7 +1432,6 @@
             initPlayerPanel();
             setupFirebaseListeners();
             
-            // Mostrar mensaje de bienvenida
             showWelcomeMessage(name, false);
             
             updateConnectionStatus('online');
@@ -1397,15 +1485,35 @@
                 const state = snapshot.val();
                 if (state) {
                     const oldNumber = App.gameState.currentNumber;
+                    const oldLineWinners = App.gameState.lineWinners?.length || 0;
+                    const oldBingoWinner = App.gameState.bingoWinner;
+                    
                     App.gameState = { ...App.gameState, ...state };
                     updateGameDisplay();
                     
+                    // Detectar cambios en ganadores
+                    if (state.lineWinners && state.lineWinners.length > oldLineWinners) {
+                        const newWinner = state.lineWinners[state.lineWinners.length - 1];
+                        showWinnerModal(newWinner);
+                        speak(`¡Línea! ${newWinner.player} ha ganado ${newWinner.prize}`, true);
+                    }
+                    
+                    if (state.bingoWinner && !oldBingoWinner) {
+                        showWinnerModal(state.bingoWinner);
+                        speak(`¡Bingo! ${state.bingoWinner.player} ha ganado ${state.bingoWinner.prize}`, true);
+                    }
+                    
                     // Anunciar número nuevo con voz
                     if (state.currentNumber && state.currentNumber !== oldNumber && state.active && !state.paused) {
-                        speak(state.currentNumber.toString(), true);
+                        speak(state.currentNumber.toString());
                         
                         if (App.settings.autoMark) {
                             setTimeout(() => autoMarkNumbers(), 500);
+                        }
+                        
+                        // Verificar ganador automático después de un delay
+                        if (App.gameState.autoWinnerEnabled && App.isAdmin) {
+                            scheduleAutoWinnerCheck();
                         }
                     }
                 }
@@ -1420,20 +1528,42 @@
                 }
             });
 
-            // Escuchar chat con procesamiento de voz para admin
-            database.ref('chat').limitToLast(100).on('child_added', (snapshot) => {
+            // Escuchar chat con procesamiento mejorado
+            database.ref('chat').orderByChild('timestamp').startAt(Date.now() - 86400000).on('child_added', (snapshot) => {
                 const msg = snapshot.val();
-                if (msg && msg.timestamp > Date.now() - 86400000) {
-                    const exists = App.chat.find(m => 
-                        m.timestamp === msg.timestamp && m.author === msg.author && m.text === msg.text
+                if (!msg) return;
+                
+                // Evitar procesar mensajes duplicados o antiguos
+                if (msg.timestamp <= App.lastProcessedChatTimestamp) return;
+                App.lastProcessedChatTimestamp = msg.timestamp;
+                
+                // Verificar si ya existe en el chat local
+                const exists = App.chat.find(m => 
+                    m.timestamp === msg.timestamp && 
+                    m.author === msg.author && 
+                    m.text === msg.text
+                );
+                
+                if (!exists) {
+                    addChatMessage(
+                        msg.text, 
+                        msg.author, 
+                        msg.isAdmin, 
+                        msg.isSystem, 
+                        msg.isPrivate, 
+                        msg.playerCoins, 
+                        msg.isBroadcast,
+                        msg.targetPlayer
                     );
-                    if (!exists) {
-                        addChatMessage(msg.text, msg.author, msg.isAdmin, msg.isSystem, msg.isPrivate, msg.playerCoins, msg.isBroadcast);
-                        
-                        // Si es mensaje del admin para todos, reproducir voz
-                        if (msg.isBroadcast && msg.isAdmin && !App.isAdmin) {
-                            speak(`Mensaje del administrador: ${msg.text}`);
-                        }
+                    
+                    // Si es mensaje del admin para todos, reproducir voz
+                    if (msg.isBroadcast && msg.isAdmin && !App.isAdmin) {
+                        speak(`Mensaje del administrador: ${msg.text}`);
+                    }
+                    
+                    // Si es mensaje privado para este jugador
+                    if (msg.isPrivate && msg.targetPlayer === App.user.name && !App.isAdmin) {
+                        speak(`Mensaje privado del administrador: ${msg.text}`);
                     }
                 }
             });
@@ -1496,6 +1626,18 @@
                     }
                 });
             }
+
+            // Escuchar reset de juego para limpiar cartones
+            database.ref('gameReset').on('value', (snapshot) => {
+                const reset = snapshot.val();
+                if (reset && reset.timestamp > Date.now() - 5000) {
+                    // Limpiar cartones del jugador
+                    App.myCards = [];
+                    renderCards();
+                    showToast('🔄 Juego reiniciado. Compra nuevos cartones.', 'info');
+                    speak('El juego ha sido reiniciado. Compra nuevos cartones para continuar jugando.');
+                }
+            });
         }
 
         function updateConnectionStatus(status) {
@@ -1523,7 +1665,6 @@
             overlay.classList.add('active');
             display.textContent = remaining;
             
-            // Anunciar con voz
             if (remaining <= 5 && remaining > 0) {
                 speak(remaining.toString());
             } else if (remaining === 10) {
@@ -1546,6 +1687,121 @@
                     speak('¡Que comience el juego!');
                 }
             }, 1000);
+        }
+
+        // ==================== SISTEMA DE GANADOR AUTOMÁTICO ====================
+        function scheduleAutoWinnerCheck() {
+            // Limpiar timer anterior si existe
+            if (App.timers.autoWinner) {
+                clearTimeout(App.timers.autoWinner);
+            }
+            
+            // Solo proceder si el juego está activo y no pausado
+            if (!App.gameState.active || App.gameState.paused) return;
+            
+            App.timers.autoWinner = setTimeout(() => {
+                checkAndAssignAutoWinner();
+            }, CONFIG.AUTO_WINNER_DELAY);
+        }
+
+        async function checkAndAssignAutoWinner() {
+            if (!App.gameState.active || App.gameState.paused) return;
+            
+            // Verificar si ya hay ganadores completos
+            if (App.gameState.claimedLines >= CONFIG.MAX_LINE_WINNERS && App.gameState.bingoClaimed) {
+                return; // Juego completado
+            }
+            
+            // Obtener jugadores activos con cartones
+            const playersSnapshot = await database.ref('players').once('value');
+            const players = playersSnapshot.val() || {};
+            const activePlayers = Object.values(players).filter(p => p.online && p.cards > 0);
+            
+            if (activePlayers.length === 0) return;
+            
+            // Seleccionar jugador aleatorio
+            const randomPlayer = activePlayers[Math.floor(Math.random() * activePlayers.length)];
+            
+            // Generar ID de cartón aleatorio
+            const cardId = Math.random().toString(36).substring(2, 6).toUpperCase();
+            
+            // Determinar si es línea o bingo
+            const isLine = App.gameState.claimedLines < CONFIG.MAX_LINE_WINNERS && Math.random() > 0.3;
+            const isBingo = !App.gameState.bingoClaimed && !isLine;
+            
+            if (isLine) {
+                await assignAutoLineWinner(randomPlayer.name, cardId);
+            } else if (isBingo) {
+                await assignAutoBingoWinner(randomPlayer.name, cardId);
+            }
+        }
+
+        async function assignAutoLineWinner(playerName, cardId) {
+            const linePct = App.gameState.prizePercentages?.line || CONFIG.LINE_PERCENTAGE;
+            const prizeAmount = Math.floor(App.gameState.prize.amount * linePct / 100 / CONFIG.MAX_LINE_WINNERS);
+            
+            const winnerData = {
+                player: playerName,
+                cardId: cardId,
+                type: 'line',
+                prize: formatMoney(prizeAmount),
+                prizeValue: prizeAmount,
+                timestamp: Date.now(),
+                position: App.gameState.claimedLines + 1,
+                isAuto: true
+            };
+            
+            await database.ref(`winners/line/${Date.now()}`).set(winnerData);
+            await database.ref('currentWinner').set(winnerData);
+            
+            // Actualizar pozo
+            const newAmount = App.gameState.prize.amount - prizeAmount;
+            await database.ref('gameState/prize/amount').set(newAmount);
+            
+            // Notificar a todos
+            await database.ref('chat').push({
+                text: `🤖 GANADOR AUTOMÁTICO DE LÍNEA: ${playerName} con cartón ${cardId} - Premio: ${formatMoney(prizeAmount)}`,
+                author: 'Sistema',
+                isSystem: true,
+                timestamp: Date.now()
+            });
+            
+            speak(`¡Línea automática! ${playerName} ha ganado ${prizeAmount} pesos con el cartón ${cardId}`, true);
+        }
+
+        async function assignAutoBingoWinner(playerName, cardId) {
+            const bingoPct = App.gameState.prizePercentages?.bingo || CONFIG.BINGO_PERCENTAGE;
+            const prizeAmount = Math.floor(App.gameState.prize.amount * bingoPct / 100);
+            
+            const winnerData = {
+                player: playerName,
+                cardId: cardId,
+                type: 'bingo',
+                prize: formatMoney(prizeAmount),
+                prizeValue: prizeAmount,
+                timestamp: Date.now(),
+                isAuto: true
+            };
+            
+            await database.ref('winners/bingo').set(winnerData);
+            await database.ref('currentWinner').set(winnerData);
+            
+            // Actualizar pozo
+            const newAmount = App.gameState.prize.amount - prizeAmount;
+            await database.ref('gameState/prize/amount').set(newAmount);
+            
+            // Notificar a todos
+            await database.ref('chat').push({
+                text: `🤖 GANADOR AUTOMÁTICO DE BINGO: ${playerName} con cartón ${cardId} - Premio: ${formatMoney(prizeAmount)}`,
+                author: 'Sistema',
+                isSystem: true,
+                timestamp: Date.now()
+            });
+            
+            speak(`¡Bingo automático! ${playerName} ha ganado ${prizeAmount} pesos con el cartón ${cardId}. ¡Felicitaciones!`, true);
+            
+            // Pausar juego
+            pauseGame();
         }
 
         // ==================== PANEL JUGADOR ====================
@@ -1701,7 +1957,6 @@
             const card = App.myCards[cardIdx];
             const number = parseInt(num);
             
-            // Verificar si ya se reclamó línea o bingo
             if (App.gameState.claimedLines >= CONFIG.MAX_LINE_WINNERS && App.gameState.bingoClaimed) {
                 showToast('El juego ha terminado. Ya hay ganadores.', 'error');
                 return;
@@ -1764,27 +2019,23 @@
         // ==================== VERIFICACIÓN DE VICTORIA ====================
         function checkWin(card, cardIdx) {
             if (App.gameState.claimedLines >= CONFIG.MAX_LINE_WINNERS && App.gameState.bingoClaimed) {
-                return; // Juego terminado
+                return;
             }
             
             const checks = [];
             
-            // Horizontales
             for (let i = 0; i < 5; i++) {
                 if (card.marked[i].every(m => m)) checks.push({ type: 'horizontal', index: i });
             }
-            // Verticales
             for (let i = 0; i < 5; i++) {
                 if (card.marked.every(r => r[i])) checks.push({ type: 'vertical', index: i });
             }
-            // Diagonales
             if ([0,1,2,3,4].every(i => card.marked[i][i])) checks.push({ type: 'diagonal', index: 0 });
             if ([0,1,2,3,4].every(i => card.marked[i][4-i])) checks.push({ type: 'diagonal', index: 1 });
             
             const hasLine = checks.length > 0;
             const hasBingo = card.marked.every(r => r.every(m => m));
             
-            // Verificar si ya ganó con este cartón
             const alreadyWonLine = App.gameState.lineWinners?.some(w => w.cardId === card.id);
             const alreadyWonBingo = App.gameState.bingoWinner?.cardId === card.id;
             
@@ -1818,7 +2069,7 @@
             showToast('💰 Solicitud enviada al administrador');
         }
 
-        // ==================== CHAT MEJORADO ====================
+        // ==================== CHAT MEJORADO CON SOPORTE PRIVADO ====================
         function switchChatTab(tab) {
             App.chatMode = tab;
             document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
@@ -1826,14 +2077,7 @@
             renderChat();
         }
 
-        async function addChatMessage(text, author, isAdmin=false, isSystem=false, isPrivate=false, playerCoins=null, isBroadcast=false) {
-            const exists = App.chat.find(m => 
-                m.text === text && 
-                m.author === author && 
-                Math.abs(m.timestamp - Date.now()) < 2000
-            );
-            if (exists) return;
-
+        async function addChatMessage(text, author, isAdmin=false, isSystem=false, isPrivate=false, playerCoins=null, isBroadcast=false, targetPlayer=null) {
             const isMyMessage = author === 'Tú' || (App.isAdmin && author === 'Admin');
             const isMyAdminMessage = App.isAdmin && isMyMessage && isBroadcast;
             
@@ -1846,6 +2090,7 @@
                 isPrivate,
                 isBroadcast,
                 isMyAdminMessage,
+                targetPlayer,
                 playerCoins: playerCoins || (author === 'Tú' ? App.user.coins : null),
                 time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
                 timestamp: Date.now()
@@ -1856,7 +2101,7 @@
             
             renderChat();
             
-            if (isPrivate && !App.isAdmin && author !== 'Tú') {
+            if (isPrivate && !App.isAdmin && author !== 'Tú' && targetPlayer === App.user.name) {
                 showToast('📩 Mensaje privado del Admin', 'info');
             }
         }
@@ -1868,7 +2113,7 @@
             const filtered = App.chat.filter(m => {
                 if (m.isSystem) return true;
                 if (App.chatMode === 'private') return m.isPrivate || m.isAdmin;
-                return !m.isPrivate || m.author === 'Tú' || m.isAdmin;
+                return !m.isPrivate || m.author === 'Tú' || m.isAdmin || m.targetPlayer === App.user.name;
             });
             
             container.innerHTML = filtered.map(m => {
@@ -1888,12 +2133,14 @@
                     messageClass += ' player';
                 }
                 
+                const privateLabel = m.isPrivate ? `<span class="private-badge">${m.targetPlayer ? 'PARA: ' + m.targetPlayer : 'PRIVADO'}</span>` : '';
+                
                 return `
                 <div class="${messageClass}">
                     <div class="message-header">
                         <span class="message-author">
                             ${m.isAdmin ? '👑 ' : ''}${m.author}
-                            ${m.isPrivate ? '<span class="private-badge">PRIVADO</span>' : ''}
+                            ${privateLabel}
                             ${m.playerCoins !== null && m.playerCoins !== undefined ? `<span class="message-coins">🪙 ${m.playerCoins === Infinity ? '∞' : m.playerCoins.toLocaleString('es-ES')}</span>` : ''}
                         </span>
                         <span class="message-time">${m.time}</span>
@@ -1920,22 +2167,30 @@
             const author = App.isAdmin ? 'Admin' : App.user.name;
             const isBroadcast = App.isAdmin && !isPrivate;
             
-            addChatMessage(text, 'Tú', App.isAdmin, false, isPrivate, App.user.coins, isBroadcast);
+            // Para admin, verificar si es mensaje privado
+            let targetPlayer = null;
+            if (App.isAdmin && $('msgTarget').value === 'private') {
+                targetPlayer = $('privateTarget').value;
+            }
+            
+            addChatMessage(text, 'Tú', App.isAdmin, false, !!targetPlayer, App.user.coins, isBroadcast, targetPlayer);
             input.value = '';
             
             await database.ref('chat').push({
                 text,
                 author,
                 isAdmin: App.isAdmin,
-                isPrivate,
+                isPrivate: !!targetPlayer,
                 isBroadcast,
+                targetPlayer,
                 playerCoins: App.isAdmin ? Infinity : App.user.coins,
                 timestamp: Date.now()
             });
             
-            // Si es admin enviando a todos, reproducir con voz propia
             if (isBroadcast && App.settings.voice) {
                 speak(`Mensaje enviado: ${text}`);
+            } else if (targetPlayer && App.settings.voice) {
+                speak(`Mensaje privado enviado a ${targetPlayer}`);
             }
         }
 
@@ -1960,13 +2215,24 @@
             }
             
             $('msgTarget').addEventListener('change', (e) => {
-                $('privateTarget').classList.toggle('hidden', e.target.value !== 'private');
-                updatePrivateTargetSelect();
+                const isPrivate = e.target.value === 'private';
+                $('privateTarget').classList.toggle('hidden', !isPrivate);
+                if (isPrivate) updatePrivateTargetSelect();
             });
             
             updatePrizeType();
             updateAdminDisplay();
             updateWinnerDisplays();
+            
+            // Cargar estado de ganador automático
+            const autoWinnerCheckbox = $('autoWinnerEnabled');
+            if (autoWinnerCheckbox) {
+                autoWinnerCheckbox.checked = App.gameState.autoWinnerEnabled;
+                autoWinnerCheckbox.addEventListener('change', (e) => {
+                    App.gameState.autoWinnerEnabled = e.target.checked;
+                    database.ref('gameState/autoWinnerEnabled').set(e.target.checked);
+                });
+            }
         }
 
         function updatePrivateTargetSelect() {
@@ -2038,7 +2304,6 @@
         }
 
         function updateWinnerDisplays() {
-            // Actualizar lista de ganadores de línea
             const lineDisplay = $('lineWinnersDisplay');
             if (lineDisplay) {
                 if (App.gameState.lineWinners.length === 0) {
@@ -2046,14 +2311,13 @@
                 } else {
                     lineDisplay.innerHTML = App.gameState.lineWinners.map((w, i) => `
                         <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(0,184,148,0.2);border-radius:8px">
-                            <span><strong>${i + 1}.</strong> ${w.player} <small>(Cartón: ${w.cardId})</small></span>
+                            <span><strong>${i + 1}.</strong> ${w.player} <small>(Cartón: ${w.cardId})</small> ${w.isAuto ? '🤖' : ''}</span>
                             <span style="color:var(--accent);font-weight:700">${w.prize}</span>
                         </div>
                     `).join('');
                 }
             }
             
-            // Actualizar ganador de bingo
             const bingoStatus = $('bingoWinnerStatus');
             if (bingoStatus) {
                 if (!App.gameState.bingoWinner) {
@@ -2061,14 +2325,13 @@
                 } else {
                     bingoStatus.innerHTML = `
                         <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(253,203,110,0.2);border-radius:8px">
-                            <span><strong>🏆</strong> ${App.gameState.bingoWinner.player} <small>(Cartón: ${App.gameState.bingoWinner.cardId})</small></span>
+                            <span><strong>🏆</strong> ${App.gameState.bingoWinner.player} <small>(Cartón: ${App.gameState.bingoWinner.cardId})</small> ${App.gameState.bingoWinner.isAuto ? '🤖' : ''}</span>
                             <span style="color:var(--accent);font-weight:700">${App.gameState.bingoWinner.prize}</span>
                         </div>
                     `;
                 }
             }
             
-            // Actualizar estado del pozo
             const prizeStatus = $('prizeStatusDisplay');
             if (prizeStatus) {
                 const totalPrize = App.gameState.prize.amount || 0;
@@ -2082,7 +2345,6 @@
                 `;
             }
             
-            // Actualizar estado reclamado
             const claimedStatus = $('claimedStatus');
             if (claimedStatus) {
                 claimedStatus.innerHTML = `
@@ -2167,7 +2429,7 @@
             speak('Códigos usados eliminados');
         }
 
-        // ==================== SISTEMA DE GANADORES MEJORADO ====================
+        // ==================== SISTEMA DE GANADORES ====================
         async function forceLineWinner() {
             const player = $('lineWinnerSelect').value;
             const cardId = $('lineCardNumber').value.trim().toUpperCase();
@@ -2187,6 +2449,11 @@
                 return;
             }
             
+            // Cancelar ganador automático si existe
+            if (App.timers.autoWinner) {
+                clearTimeout(App.timers.autoWinner);
+            }
+            
             const linePct = App.gameState.prizePercentages?.line || CONFIG.LINE_PERCENTAGE;
             const prizeAmount = Math.floor(App.gameState.prize.amount * linePct / 100 / CONFIG.MAX_LINE_WINNERS);
             
@@ -2197,21 +2464,19 @@
                 prize: formatMoney(prizeAmount),
                 prizeValue: prizeAmount,
                 timestamp: Date.now(),
-                position: App.gameState.claimedLines + 1
+                position: App.gameState.claimedLines + 1,
+                isAuto: false
             };
             
-            // Guardar en Firebase
             await database.ref(`winners/line/${Date.now()}`).set(winnerData);
             await database.ref('currentWinner').set(winnerData);
             
-            // Actualizar pozo
             const newAmount = App.gameState.prize.amount - prizeAmount;
             await database.ref('gameState/prize/amount').set(newAmount);
             
             showWinnerModal(winnerData);
-            speak(`¡Línea! ${player} ha ganado ${prizeAmount} pesos con el cartón ${cardId}`);
+            speak(`¡Línea! ${player} ha ganado ${prizeAmount} pesos con el cartón ${cardId}`, true);
             
-            // Limpiar inputs
             $('lineWinnerSelect').value = '';
             $('lineCardNumber').value = '';
         }
@@ -2235,6 +2500,11 @@
                 return;
             }
             
+            // Cancelar ganador automático si existe
+            if (App.timers.autoWinner) {
+                clearTimeout(App.timers.autoWinner);
+            }
+            
             const bingoPct = App.gameState.prizePercentages?.bingo || CONFIG.BINGO_PERCENTAGE;
             const prizeAmount = Math.floor(App.gameState.prize.amount * bingoPct / 100);
             
@@ -2244,34 +2514,27 @@
                 type: 'bingo',
                 prize: formatMoney(prizeAmount),
                 prizeValue: prizeAmount,
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                isAuto: false
             };
             
-            // Guardar en Firebase
             await database.ref('winners/bingo').set(winnerData);
             await database.ref('currentWinner').set(winnerData);
             
-            // Actualizar pozo
             const newAmount = App.gameState.prize.amount - prizeAmount;
             await database.ref('gameState/prize/amount').set(newAmount);
             
             showWinnerModal(winnerData);
-            speak(`¡Bingo! ${player} ha ganado ${prizeAmount} pesos con el cartón ${cardId}. ¡Felicitaciones!`);
+            speak(`¡Bingo! ${player} ha ganado ${prizeAmount} pesos con el cartón ${cardId}. ¡Felicitaciones!`, true);
             
-            // Pausar juego
             pauseGame();
             
-            // Limpiar inputs
             $('bingoWinnerSelect').value = '';
             $('bingoCardNumber').value = '';
         }
 
         function simulateLineLogic() {
-            // Simular lógica automática basada en cartones activos
             showToast('Simulando lógica de línea...', 'info');
-            
-            // Aquí iría la lógica para verificar qué jugadores tienen línea
-            // basado en los números cantados y sus cartones
             speak('Simulación de línea completada. Revisa la lista de potenciales ganadores.');
         }
 
@@ -2361,6 +2624,9 @@
                 clearInterval(App.timers.game);
                 App.timers.game = null;
             }
+            if (App.timers.autoWinner) {
+                clearTimeout(App.timers.autoWinner);
+            }
             if ($('btnStart')) $('btnStart').disabled = false;
             showToast('⏸ Juego pausado', 'info');
             speak('Juego pausado');
@@ -2370,11 +2636,40 @@
         async function resetGame() {
             pauseGame();
             
+            // Limpiar números y estado
             await database.ref('calledNumbers').remove();
             await database.ref('gameState/currentNumber').set(null);
             await database.ref('potentialWinners').remove();
             await database.ref('winners').remove();
             await database.ref('currentWinner').remove();
+            
+            // IMPORTANTE: Limpiar cartones de TODOS los jugadores
+            const playersSnapshot = await database.ref('players').once('value');
+            const players = playersSnapshot.val() || {};
+            
+            const updates = {};
+            Object.keys(players).forEach(playerId => {
+                updates[`players/${playerId}/cards`] = 0;
+            });
+            
+            // También limpiar cartones del admin si existe
+            const adminsSnapshot = await database.ref('admins').once('value');
+            const admins = adminsSnapshot.val() || {};
+            Object.keys(admins).forEach(adminId => {
+                updates[`admins/${adminId}/cards`] = 0;
+            });
+            
+            await database.ref().update(updates);
+            
+            // Notificar a todos los jugadores que deben reiniciar
+            await database.ref('gameReset').set({
+                timestamp: Date.now(),
+                message: 'Juego reiniciado. Compra nuevos cartones.'
+            });
+            
+            // Limpiar cartones locales
+            App.myCards = [];
+            renderCards();
             
             App.calledNumbers = [];
             App.gameState.currentNumber = null;
@@ -2391,8 +2686,8 @@
             
             updateGameDisplay();
             updateWinnerDisplays();
-            showToast('🔄 Juego reiniciado');
-            speak('Juego reiniciado. Todos los valores han sido restablecidos.');
+            showToast('🔄 Juego reiniciado. Todos los cartones han sido eliminados.');
+            speak('Juego reiniciado. Todos los jugadores deben comprar nuevos cartones.');
         }
 
         async function generateRandomNumber() {
@@ -2411,7 +2706,6 @@
         }
 
         async function callNumber(num) {
-            // Progresivo
             if (App.gameState.prize.type === 'progressive') {
                 const newAmount = Math.min(
                     App.gameState.prize.amount + (App.gameState.prize.increment || 100),
@@ -2458,10 +2752,10 @@
             if (!text) return;
             
             const isPrivate = target === 'private';
-            const finalText = isPrivate ? `🔒 [Privado a ${privateTarget}]: ${text}` : `📢 ${text}`;
+            const finalText = isPrivate ? text : `📢 ${text}`;
             const isBroadcast = !isPrivate;
             
-            addChatMessage(finalText, 'Tú', true, false, isPrivate, Infinity, isBroadcast);
+            addChatMessage(finalText, 'Tú', true, false, isPrivate, Infinity, isBroadcast, isPrivate ? privateTarget : null);
             $('adminMessage').value = '';
             
             await database.ref('chat').push({
@@ -2470,18 +2764,18 @@
                 isAdmin: true,
                 isPrivate,
                 isBroadcast,
+                targetPlayer: isPrivate ? privateTarget : null,
                 playerCoins: Infinity,
                 timestamp: Date.now()
             });
             
-            // Reproducir voz del mensaje
-            if (isPrivate) {
+            if (isPrivate && privateTarget) {
                 speak(`Mensaje privado enviado a ${privateTarget}`);
             } else {
                 speak(`Mensaje para todos: ${text}`);
             }
             
-            showToast(isPrivate ? 'Mensaje privado enviado' : 'Mensaje enviado a todos');
+            showToast(isPrivate ? `Mensaje privado enviado a ${privateTarget}` : 'Mensaje enviado a todos');
         }
 
         async function giveCoins() {
@@ -2555,7 +2849,6 @@
                     prizeEl.textContent = formatMoney(prize.amount);
                     prizeTypeEl.textContent = prize.type === 'progressive' ? 'POZO PROGRESIVO' : 'POZO FIJO';
                     
-                    // Mostrar porcentajes
                     const linePct = App.gameState.prizePercentages?.line || CONFIG.LINE_PERCENTAGE;
                     const bingoPct = App.gameState.prizePercentages?.bingo || CONFIG.BINGO_PERCENTAGE;
                     prizePctEl.innerHTML = `Línea: ${linePct}% | Bingo: ${bingoPct}%`;
@@ -2573,7 +2866,7 @@
             if (!modal) return;
             
             const title = winner.type === 'line' ? '¡HAY LÍNEA!' : '¡BINGO!';
-            $('winnerTitle').textContent = title;
+            $('winnerTitle').textContent = title + (winner.isAuto ? ' (AUTOMÁTICO)' : '');
             $('winnerName').textContent = winner.player;
             $('winnerPrize').textContent = `Premio: ${winner.prize}${winner.cardId ? ` (Cartón: ${winner.cardId})` : ''}`;
             
