@@ -118,7 +118,7 @@
         /* Botones de Cantar */
         .claim-buttons{display:flex;gap:15px;margin-bottom:20px;justify-content:center}
         .claim-btn{padding:15px 30px;font-size:1.1rem;border-radius:15px;font-weight:800;cursor:pointer;transition:all 0.3s;border:none;position:relative;overflow:hidden}
-        .claim-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
+        .claim-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;background:#636e72!important;box-shadow:none!important}
         .claim-btn-line{background:linear-gradient(135deg,var(--success) 0%,#00d9a5 100%);color:#fff;box-shadow:0 4px 20px rgba(0,184,148,0.4)}
         .claim-btn-line:not(:disabled):hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,184,148,0.6)}
         .claim-btn-bingo{background:linear-gradient(135deg,var(--accent) 0%,#f39c12 100%);color:var(--dark);box-shadow:0 4px 20px rgba(253,203,110,0.4)}
@@ -192,15 +192,15 @@
         .card-gold .cell.error{background:var(--danger);animation:shake 0.5s}
         .card-gold .cell.error:hover{background:var(--danger)!important;transform:none!important}
         
-        /* Chat - CON ANIMACIÓN MEJORADA */
-        .chat-container{background:rgba(255,255,255,0.03);border-radius:20px;padding:20px;height:320px;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.05)}
+        /* Chat - CORREGIDO Y MEJORADO */
+        .chat-container{background:rgba(255,255,255,0.03);border-radius:20px;padding:20px;height:320px;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.05);margin-top:20px}
         .chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:15px;border-bottom:2px solid rgba(255,255,255,0.1)}
         .chat-title{font-weight:800;font-size:1rem;display:flex;align-items:center;gap:10px}
         .chat-tabs{display:flex;gap:10px}
         .chat-tab{padding:8px 16px;border-radius:20px;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:0.8rem;font-weight:600;cursor:pointer;transition:0.3s}
         .chat-tab:hover{background:rgba(255,255,255,0.2)}
         .chat-tab.active{background:var(--accent);color:var(--dark)}
-        .chat-messages{flex:1;overflow-y:auto;padding:15px;background:rgba(0,0,0,0.2);border-radius:15px;margin-bottom:15px}
+        .chat-messages{flex:1;overflow-y:auto;padding:15px;background:rgba(0,0,0,0.2);border-radius:15px;margin-bottom:15px;min-height:150px}
         .message{margin-bottom:12px;padding:12px 16px;border-radius:15px;position:relative;max-width:85%;word-break:break-word;transition:all 0.3s}
         .message:hover{transform:translateX(5px)}
         
@@ -344,12 +344,6 @@
         .select-winner-btn{background:var(--success);border:none;color:#fff;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:800;transition:0.2s}
         .select-winner-btn:hover{background:#00d9a5;transform:scale(1.05);box-shadow:0 0 20px var(--success)}
         
-        /* Forced Winner - NUEVO */
-        .forced-winner-section{background:rgba(231,76,60,0.1);border:2px solid var(--danger);border-radius:15px;padding:20px;margin-top:15px}
-        .forced-winner-section h4{color:var(--danger);margin-bottom:15px;font-size:1rem}
-        .card-number-input{width:100%;padding:12px;border-radius:10px;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);color:#fff;font-size:1rem;text-align:center;letter-spacing:5px;margin-bottom:10px}
-        .card-number-input:focus{outline:none;border-color:var(--danger);background:rgba(255,255,255,0.15)}
-        
         /* Line Winner Section */
         .line-winner-section{background:rgba(0,184,148,0.1);border:2px solid var(--success);border-radius:15px;padding:20px;margin-top:15px}
         .line-winner-section h4{color:var(--success);margin-bottom:15px;font-size:1rem}
@@ -358,19 +352,21 @@
         .bingo-winner-section{background:rgba(253,203,110,0.1);border:2px solid var(--accent);border-radius:15px;padding:20px;margin-top:15px}
         .bingo-winner-section h4{color:var(--accent);margin-bottom:15px;font-size:1rem}
         
-        /* Modal */
-        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(10px)}
+        /* Modal - CORREGIDO */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(10px)}
         .modal-overlay.active{display:flex}
-        .modal-content{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:30px;padding:50px;max-width:500px;width:100%;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,0.6);position:relative;overflow:hidden;animation:modalIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
+        .modal-content{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:30px;padding:40px;max-width:500px;width:100%;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,0.6);position:relative;overflow:hidden;animation:modalIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);z-index:10000}
         .modal-content::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.1) 1px,transparent 1px);background-size:20px 20px;opacity:0.5;animation:rotate 60s linear infinite}
         @keyframes rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
         @keyframes modalIn{0%{transform:scale(0.5);opacity:0}100%{transform:scale(1);opacity:1}}
         .modal-icon{font-size:5rem;margin-bottom:20px;animation:bounce 1s infinite;position:relative;z-index:1}
         .modal-title{font-size:2rem;font-weight:900;margin-bottom:15px;text-shadow:0 4px 15px rgba(0,0,0,0.3);position:relative;z-index:1}
-        .modal-winner{font-size:3rem;font-weight:900;color:var(--accent);margin:25px 0;text-shadow:0 0 40px rgba(253,203,110,0.8);position:relative;z-index:1;animation:glow 2s infinite}
+        .modal-winner{font-size:2.5rem;font-weight:900;color:var(--accent);margin:20px 0;text-shadow:0 0 40px rgba(253,203,110,0.8);position:relative;z-index:1;animation:glow 2s infinite}
         @keyframes glow{0%,100%{text-shadow:0 0 40px rgba(253,203,110,0.8)}50%{text-shadow:0 0 80px rgba(253,203,110,1),0 0 120px rgba(255,255,255,0.5)}}
         .modal-prize{font-size:1.3rem;margin-bottom:30px;opacity:0.9;position:relative;z-index:1}
-        .modal-btn{position:relative;z-index:1;padding:16px 40px;font-size:1.1rem}
+        .modal-btn{position:relative;z-index:1;padding:16px 40px;font-size:1.1rem;margin-top:10px}
+        .modal-close{position:absolute;top:15px;right:15px;background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.5rem;transition:all 0.3s;z-index:10001;display:flex;align-items:center;justify-content:center}
+        .modal-close:hover{background:rgba(255,255,255,0.4);transform:scale(1.1)}
         
         /* Countdown */
         .countdown-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:2000;display:none;justify-content:center;align-items:center;flex-direction:column}
@@ -409,6 +405,8 @@
             .generated-code{font-size:2rem;letter-spacing:5px}
             .claim-buttons{flex-direction:column}
             .claim-btn{width:100%}
+            .modal-content{padding:30px 20px}
+            .modal-winner{font-size:2rem}
         }
         
         .hidden{display:none!important}
@@ -707,7 +705,7 @@
                         🎨 3 Estilos de Cartón Disponibles<br>
                         👥 Sala compartida con todos los jugadores
                     </div>
-                    <div style="margin-top:10px;opacity:0.5;font-size:0.8rem">v8.0 Firebase Live - Juego Responsable</div>
+                    <div style="margin-top:10px;opacity:0.5;font-size:0.8rem">v9.0 Firebase Live - Juego Responsable</div>
                 </div>
             </div>
         </div>
@@ -792,15 +790,18 @@
             </div>
         </div>
 
-        <div class="chat-container">
+        <!-- CHAT CONTAINER - CORREGIDO -->
+        <div class="chat-container" id="chatContainer">
             <div class="chat-header">
                 <div class="chat-title">💬 Chat en Vivo</div>
                 <div class="chat-tabs">
                     <button class="chat-tab active" onclick="switchChatTab('public')" id="tab-public">Público</button>
-                    <button class="chat-tab hidden" onclick="switchChatTab('private')" id="tab-private">Privado 👑</button>
+                    <button class="chat-tab" onclick="switchChatTab('private')" id="tab-private">Privado 👑</button>
                 </div>
             </div>
-            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Los mensajes se cargarán aquí -->
+            </div>
             <div class="chat-input-group">
                 <input type="text" id="chatInput" class="chat-input" placeholder="Escribe un mensaje..." maxlength="120" onkeypress="if(event.key==='Enter')sendMessage()">
                 <button class="btn btn-primary" style="padding:12px 20px" onclick="sendMessage()">📨</button>
@@ -1049,20 +1050,21 @@
         </div>
     </div>
 
-    <!-- Winner Modal -->
-    <div id="winnerModal" class="modal-overlay">
+    <!-- Winner Modal - CORREGIDO CON BOTÓN DE CERRAR -->
+    <div id="winnerModal" class="modal-overlay" onclick="if(event.target === this) closeWinnerModal()">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeWinnerModal()">×</button>
             <div class="modal-icon">🏆</div>
             <h2 class="modal-title" id="winnerTitle">¡TENEMOS GANADOR!</h2>
             <div class="modal-winner" id="winnerName">Jugador</div>
             <div class="modal-prize" id="winnerPrize">Premio: $1,000</div>
-            <div id="winnerPercentage" class="winner-percentage hidden"></div>
+            <div id="winnerPercentageDisplay" class="winner-percentage hidden"></div>
             <button class="btn btn-primary modal-btn" onclick="closeWinnerModal()">Continuar Juego</button>
         </div>
     </div>
 
     <!-- Countdown Overlay -->
-    <div id="countdownOverlay" class="countdown-overlay">
+    <div id="countdownOverlay" class="countdown-overlay" onclick="event.stopPropagation()">
         <div class="countdown-number" id="countdownNumber">10</div>
         <div class="countdown-text">El juego comienza en...</div>
     </div>
@@ -1102,8 +1104,8 @@
             LINE_PERCENTAGE: 20,
             BINGO_PERCENTAGE: 80,
             MAX_LINE_WINNERS: 3,
-            AUTO_WINNER_DELAY: 10000, // 10 segundos para asignar ganador automático
-            OFFLINE_TIMEOUT: 30000 // 30 segundos para considerar offline
+            AUTO_WINNER_DELAY: 10000,
+            OFFLINE_TIMEOUT: 30000
         };
 
         // ==================== ESTADO GLOBAL ====================
@@ -1145,34 +1147,31 @@
             lastProcessedChatTimestamp: 0,
             hasLine: false,
             hasBingo: false,
-            consoleLogs: []
+            consoleLogs: [],
+            chatInitialized: false
         };
 
         let synth = window.speechSynthesis;
 
-        // ==================== SISTEMA DE VOZ MEJORADO CON COLA ====================
+        // ==================== SISTEMA DE VOZ MEJORADO ====================
         function initAudio() {
             if (!App.audioContext) {
                 App.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
-            // Reiniciar speech synthesis si está colgado
             if (synth) {
                 synth.cancel();
             }
         }
 
-        // Sistema de cola de voz para evitar que se tilde
         function speak(text, priority = false) {
             if (!App.settings.voice || !synth) return;
             
-            // Si es prioritario, limpiar cola actual
             if (priority) {
                 synth.cancel();
                 App.speechQueue = [];
                 App.isSpeaking = false;
             }
             
-            // Agregar a la cola
             App.speechQueue.push(text);
             processSpeechQueue();
         }
@@ -1182,19 +1181,14 @@
             
             App.isSpeaking = true;
             const text = App.speechQueue.shift();
-            
-            // Dividir texto largo en chunks para mejor manejo
-            const chunks = splitTextIntoChunks(text, 150); // 150 caracteres por chunk
-            
+            const chunks = splitTextIntoChunks(text, 150);
             speakChunks(chunks, 0);
         }
 
         function splitTextIntoChunks(text, maxLength) {
             if (text.length <= maxLength) return [text];
-            
             const chunks = [];
             const sentences = text.match(/[^\.!\?]+[\.!\?]+|[^\.!\?]+$/g) || [text];
-            
             let currentChunk = '';
             for (const sentence of sentences) {
                 if ((currentChunk + sentence).length <= maxLength) {
@@ -1205,7 +1199,6 @@
                 }
             }
             if (currentChunk) chunks.push(currentChunk.trim());
-            
             return chunks;
         }
 
@@ -1216,7 +1209,6 @@
                 return;
             }
             
-            // Verificar si el synth sigue funcionando
             if (!synth) {
                 App.isSpeaking = false;
                 return;
@@ -1228,21 +1220,14 @@
             utterance.pitch = 1;
             utterance.volume = 1;
             
-            // Seleccionar voz en español
             const voices = synth.getVoices();
             const spanishVoice = voices.find(v => v.lang.includes('es'));
-            if (spanishVoice) {
-                utterance.voice = spanishVoice;
-            }
+            if (spanishVoice) utterance.voice = spanishVoice;
             
-            utterance.onend = () => {
-                setTimeout(() => speakChunks(chunks, index + 1), 50);
-            };
-            
+            utterance.onend = () => setTimeout(() => speakChunks(chunks, index + 1), 50);
             utterance.onerror = (e) => {
                 console.warn('Error de voz:', e);
                 App.isSpeaking = false;
-                // Intentar reiniciar
                 setTimeout(() => {
                     synth = window.speechSynthesis;
                     processSpeechQueue();
@@ -1254,17 +1239,17 @@
 
         // ==================== UTILIDADES ====================
         const $ = id => document.getElementById(id);
+        
         const showToast = (msg, type='success', duration=3000) => {
             const container = $('toastContainer');
+            if (!container) return;
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             const icons = { success: '✓', error: '✕', info: 'ℹ️', warning: '⚠️' };
             toast.innerHTML = `<span style="font-size:1.2rem">${icons[type]}</span><span>${msg}</span>`;
             container.appendChild(toast);
             
-            if (type === 'success' || type === 'error') {
-                playNotificationSound(type);
-            }
+            if (type === 'success' || type === 'error') playNotificationSound(type);
             
             setTimeout(() => {
                 toast.style.opacity = '0';
@@ -1275,10 +1260,8 @@
 
         const playNotificationSound = (type) => {
             if (!App.audioContext) return;
-            
             const oscillator = App.audioContext.createOscillator();
             const gainNode = App.audioContext.createGain();
-            
             oscillator.connect(gainNode);
             gainNode.connect(App.audioContext.destination);
             
@@ -1293,7 +1276,6 @@
             
             gainNode.gain.setValueAtTime(0.3, App.audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, App.audioContext.currentTime + 0.5);
-            
             oscillator.start(App.audioContext.currentTime);
             oscillator.stop(App.audioContext.currentTime + 0.5);
         };
@@ -1309,32 +1291,23 @@
             const timestamp = new Date().toLocaleTimeString('es-ES');
             const logEntry = { message, type, timestamp };
             App.consoleLogs.push(logEntry);
-            
-            // Mantener solo últimos 50 logs
-            if (App.consoleLogs.length > 50) {
-                App.consoleLogs.shift();
-            }
-            
+            if (App.consoleLogs.length > 50) App.consoleLogs.shift();
             updateConsoleDisplay();
-            
-            // También log a consola real
             console.log(`[${timestamp}] ${message}`);
         }
 
         function updateConsoleDisplay() {
             const consoleContent = $('consoleContent');
             if (!consoleContent) return;
-            
             consoleContent.innerHTML = App.consoleLogs.map(log => `
                 <div class="console-log-entry ${log.type}">
                     <span style="opacity:0.6;font-size:0.75rem">[${log.timestamp}]</span> ${log.message}
                 </div>
             `).join('');
-            
             consoleContent.scrollTop = consoleContent.scrollHeight;
         }
 
-        // ==================== SISTEMA DE LOGIN Y CÓDIGOS ====================
+        // ==================== SISTEMA DE LOGIN ====================
         function setLoginMode(mode) {
             App.loginMode = mode;
             document.querySelectorAll('.toggle-option').forEach(el => el.classList.remove('active'));
@@ -1361,21 +1334,15 @@
         function moveCodeInput(current) {
             const input = $(`code${current}`);
             input.value = input.value.replace(/[^0-9]/g, '');
-            
             if (input.value.length === 1) {
-                if (current < 4) {
-                    $(`code${current + 1}`).focus();
-                } else {
-                    $('loginBtn').focus();
-                }
+                if (current < 4) $(`code${current + 1}`).focus();
+                else $('loginBtn').focus();
             }
         }
 
         function handleCodeBackspace(current, event) {
             if (event.key === 'Backspace' && !$(`code${current}`).value) {
-                if (current > 1) {
-                    $(`code${current - 1}`).focus();
-                }
+                if (current > 1) $(`code${current - 1}`).focus();
             }
         }
 
@@ -1388,19 +1355,9 @@
             try {
                 const snapshot = await database.ref(`premiumCodes/${code}`).once('value');
                 const codeData = snapshot.val();
-                
-                if (!codeData) {
-                    return { valid: false, message: 'Código no válido' };
-                }
-                
-                if (codeData.used) {
-                    return { valid: false, message: 'Este código ya fue utilizado' };
-                }
-                
-                if (codeData.expires && Date.now() > codeData.expires) {
-                    return { valid: false, message: 'Código expirado' };
-                }
-                
+                if (!codeData) return { valid: false, message: 'Código no válido' };
+                if (codeData.used) return { valid: false, message: 'Este código ya fue utilizado' };
+                if (codeData.expires && Date.now() > codeData.expires) return { valid: false, message: 'Código expirado' };
                 return { valid: true, data: codeData };
             } catch (error) {
                 console.error('Error validando código:', error);
@@ -1443,7 +1400,6 @@
 
             if (App.loginMode === 'premium') {
                 const enteredCode = getEnteredCode();
-                
                 if (enteredCode.length !== 4) {
                     showToast('Ingresa el código completo de 4 dígitos', 'error');
                     return;
@@ -1465,7 +1421,7 @@
             }
         }
 
-        // ==================== MENSAJE DE BIENVENIDA CON VOZ ====================
+        // ==================== MENSAJE DE BIENVENIDA ====================
         function showWelcomeMessage(playerName, isPremium) {
             const overlay = document.createElement('div');
             overlay.className = 'welcome-overlay';
@@ -1482,18 +1438,16 @@
                 <p>🎁 Has recibido <strong style="color:var(--accent)">${coins} fichas</strong> para comenzar</p>
                 <div class="warning">
                     <strong>⚠️ Juego Responsable</strong>
-                    <p>El juego compulsivo puede causar adicción y problemas financieros. Juega por diversión, no para ganar dinero. Si sientes que estás perdiendo el control, busca ayuda profesional.</p>
+                    <p>El juego compulsivo puede causar adicción y problemas financieros. Juega por diversión, no para ganar dinero.</p>
                 </div>
-                <p style="font-size:0.9rem;opacity:0.8;margin-top:15px">🎤 La voz en tiempo real está activada</p>
                 <button class="btn btn-primary" onclick="closeWelcomeMessage()">¡Entendido, vamos a jugar!</button>
             `;
             
             document.body.appendChild(overlay);
             document.body.appendChild(message);
             
-            // Usar el nuevo sistema de voz
             setTimeout(() => {
-                const welcomeText = `¡Bienvenido ${playerName} a Bingo Pro Live! Has recibido ${coins} fichas. Recuerda, juega responsablemente. El juego compulsivo puede causar adicción. Diviértete y buena suerte.`;
+                const welcomeText = `¡Bienvenido ${playerName} a Bingo Pro Live! Has recibido ${coins} fichas. Recuerda jugar responsablemente.`;
                 speak(welcomeText, true);
             }, 500);
             
@@ -1523,9 +1477,7 @@
             
             initAdminPanel();
             setupFirebaseListeners();
-            
             showWelcomeMessage(name, false);
-            
             updateConnectionStatus('online');
             
             await database.ref(`admins/${App.user.id}`).set({
@@ -1534,7 +1486,6 @@
                 lastSeen: Date.now()
             });
             
-            // Iniciar limpieza de jugadores offline
             startOfflineCleanup();
         }
 
@@ -1568,7 +1519,6 @@
             $('playerAvatar').classList.add('premium');
             
             showWelcomeMessage(name, true);
-            
             updateConnectionStatus('online');
             
             await database.ref('chat').push({
@@ -1612,9 +1562,7 @@
             
             initPlayerPanel();
             setupFirebaseListeners();
-            
             showWelcomeMessage(name, false);
-            
             updateConnectionStatus('online');
             
             await database.ref('chat').push({
@@ -1644,7 +1592,6 @@
 
         // ==================== LIMPIEZA DE JUGADORES OFFLINE ====================
         function startOfflineCleanup() {
-            // Verificar cada 10 segundos
             App.timers.offlineCheck = setInterval(async () => {
                 const now = Date.now();
                 const playersSnapshot = await database.ref('players').once('value');
@@ -1654,7 +1601,6 @@
                 let cleaned = 0;
                 
                 Object.entries(players).forEach(([id, player]) => {
-                    // Si no ha actualizado en 30 segundos, marcar como offline
                     if (player.online && (now - player.lastSeen > CONFIG.OFFLINE_TIMEOUT)) {
                         updates[`players/${id}/online`] = false;
                         updates[`players/${id}/lastSeen`] = now;
@@ -1670,7 +1616,6 @@
         }
 
         async function refreshPlayerList() {
-            // Forzar actualización de lista
             const playersSnapshot = await database.ref('players').once('value');
             const players = playersSnapshot.val() || {};
             const now = Date.now();
@@ -1692,18 +1637,12 @@
                 showToast('✅ Lista de jugadores actualizada', 'success');
             }
             
-            // Recargar jugadores
             App.players.clear();
             Object.entries(players).forEach(([id, player]) => {
-                if (player.online) {
-                    App.players.set(id, player);
-                }
+                if (player.online) App.players.set(id, player);
             });
             updatePlayerCount();
-            
-            if (App.isAdmin) {
-                updateAdminDisplay();
-            }
+            if (App.isAdmin) updateAdminDisplay();
         }
 
         // ==================== FIREBASE: LISTENERS ====================
@@ -1713,9 +1652,7 @@
                 const players = snapshot.val() || {};
                 App.players.clear();
                 Object.entries(players).forEach(([id, player]) => {
-                    if (player.online) {
-                        App.players.set(id, player);
-                    }
+                    if (player.online) App.players.set(id, player);
                 });
                 updatePlayerCount();
                 if (App.isAdmin) {
@@ -1737,10 +1674,7 @@
                     App.gameState = { ...App.gameState, ...state };
                     updateGameDisplay();
                     
-                    // Detectar cambio en modo sin línea
-                    if (state.noLineMode !== oldNoLineMode) {
-                        updateNoLineModeDisplay();
-                    }
+                    if (state.noLineMode !== oldNoLineMode) updateNoLineModeDisplay();
                     
                     // Detectar cambios en ganadores
                     if (state.lineWinners && state.lineWinners.length > oldLineWinners) {
@@ -1748,33 +1682,22 @@
                         showWinnerModal(newWinner);
                         speak(`¡Línea! ${newWinner.player} ha ganado ${newWinner.prize}`, true);
                         logToConsole(`🏆 LÍNEA: ${newWinner.player} - Cartón ${newWinner.cardId} - ${newWinner.prize}`, 'winner');
-                        pauseGame(); // Pausar automáticamente
+                        pauseGame();
                     }
                     
                     if (state.bingoWinner && !oldBingoWinner) {
                         showWinnerModal(state.bingoWinner);
                         speak(`¡Bingo! ${state.bingoWinner.player} ha ganado ${state.bingoWinner.prize}`, true);
                         logToConsole(`🏆 BINGO: ${state.bingoWinner.player} - Cartón ${state.bingoWinner.cardId} - ${state.bingoWinner.prize}`, 'winner');
-                        pauseGame(); // Pausar automáticamente
+                        pauseGame();
                     }
                     
-                    // Anunciar número nuevo con voz
+                    // Anunciar número nuevo
                     if (state.currentNumber && state.currentNumber !== oldNumber && state.active && !state.paused) {
                         speak(state.currentNumber.toString());
-                        
-                        if (App.settings.autoMark) {
-                            setTimeout(() => autoMarkNumbers(), 500);
-                        }
-                        
-                        // Verificar ganador automático después de un delay
-                        if (App.gameState.autoWinnerEnabled && App.isAdmin) {
-                            scheduleAutoWinnerCheck();
-                        }
-                        
-                        // Verificar si el jugador tiene línea o bingo
-                        if (!App.isAdmin) {
-                            checkPlayerWinStatus();
-                        }
+                        if (App.settings.autoMark) setTimeout(() => autoMarkNumbers(), 500);
+                        if (App.gameState.autoWinnerEnabled && App.isAdmin) scheduleAutoWinnerCheck();
+                        if (!App.isAdmin) checkPlayerWinStatus();
                     }
                 }
             });
@@ -1785,51 +1708,46 @@
                 if (numbers) {
                     App.calledNumbers = Object.values(numbers);
                     updateGameDisplay();
-                    if (!App.isAdmin) {
-                        checkPlayerWinStatus();
-                    }
+                    if (!App.isAdmin) checkPlayerWinStatus();
                 }
             });
 
-            // Escuchar chat con procesamiento mejorado
-            database.ref('chat').orderByChild('timestamp').limitToLast(50).on('child_added', (snapshot) => {
-                const msg = snapshot.val();
-                if (!msg) return;
-                
-                // Evitar procesar mensajes duplicados o antiguos
-                if (msg.timestamp <= App.lastProcessedChatTimestamp) return;
-                App.lastProcessedChatTimestamp = msg.timestamp;
-                
-                // Verificar si ya existe en el chat local
-                const exists = App.chat.find(m => 
-                    m.timestamp === msg.timestamp && 
-                    m.author === msg.author && 
-                    m.text === msg.text
-                );
-                
-                if (!exists) {
-                    addChatMessage(
-                        msg.text, 
-                        msg.author, 
-                        msg.isAdmin, 
-                        msg.isSystem, 
-                        msg.isPrivate, 
-                        msg.playerCoins, 
-                        msg.isBroadcast,
-                        msg.targetPlayer
+            // CHAT - CORREGIDO
+            if (!App.chatInitialized) {
+                App.chatInitialized = true;
+                database.ref('chat').limitToLast(50).on('child_added', (snapshot) => {
+                    const msg = snapshot.val();
+                    if (!msg) return;
+                    
+                    // Evitar duplicados
+                    const exists = App.chat.find(m => 
+                        m.timestamp === msg.timestamp && 
+                        m.author === msg.author && 
+                        m.text === msg.text
                     );
                     
-                    // Si es mensaje del admin para todos, reproducir voz
-                    if (msg.isBroadcast && msg.isAdmin && !App.isAdmin) {
-                        speak(`Mensaje del administrador: ${msg.text}`);
+                    if (!exists) {
+                        addChatMessage(
+                            msg.text, 
+                            msg.author, 
+                            msg.isAdmin, 
+                            msg.isSystem, 
+                            msg.isPrivate, 
+                            msg.playerCoins, 
+                            msg.isBroadcast,
+                            msg.targetPlayer
+                        );
+                        
+                        if (msg.isBroadcast && msg.isAdmin && !App.isAdmin) {
+                            speak(`Mensaje del administrador: ${msg.text}`);
+                        }
+                        
+                        if (msg.isPrivate && msg.targetPlayer === App.user?.name && !App.isAdmin) {
+                            speak(`Mensaje privado del administrador: ${msg.text}`);
+                        }
                     }
-                    
-                    // Si es mensaje privado para este jugador
-                    if (msg.isPrivate && msg.targetPlayer === App.user.name && !App.isAdmin) {
-                        speak(`Mensaje privado del administrador: ${msg.text}`);
-                    }
-                }
-            });
+                });
+            }
 
             // Escuchar ganadores
             database.ref('winners/line').on('value', (snapshot) => {
@@ -1858,10 +1776,7 @@
             if (App.isAdmin) {
                 database.ref('premiumCodes').on('value', (snapshot) => {
                     const codes = snapshot.val() || {};
-                    App.premiumCodes = Object.entries(codes).map(([code, data]) => ({
-                        code,
-                        ...data
-                    }));
+                    App.premiumCodes = Object.entries(codes).map(([code, data]) => ({ code, ...data }));
                     updatePremiumCodesList();
                 });
             }
@@ -1872,10 +1787,7 @@
                 if (data && data.active) {
                     const elapsed = Math.floor((Date.now() - data.startedAt) / 1000);
                     const remaining = Math.max(0, data.seconds - elapsed);
-                    
-                    if (remaining > 0) {
-                        showCountdown(remaining);
-                    }
+                    if (remaining > 0) showCountdown(remaining);
                 }
             });
 
@@ -1891,11 +1803,10 @@
                 });
             }
 
-            // Escuchar reset de juego para limpiar cartones
+            // Escuchar reset de juego
             database.ref('gameReset').on('value', (snapshot) => {
                 const reset = snapshot.val();
                 if (reset && reset.timestamp > Date.now() - 5000) {
-                    // Limpiar cartones del jugador
                     App.myCards = [];
                     App.hasLine = false;
                     App.hasBingo = false;
@@ -1940,11 +1851,8 @@
             overlay.classList.add('active');
             display.textContent = remaining;
             
-            if (remaining <= 5 && remaining > 0) {
-                speak(remaining.toString());
-            } else if (remaining === 10) {
-                speak('El juego comienza en 10 segundos');
-            }
+            if (remaining <= 5 && remaining > 0) speak(remaining.toString());
+            else if (remaining === 10) speak('El juego comienza en 10 segundos');
             
             if (App.timers.countdown) clearInterval(App.timers.countdown);
             
@@ -1952,9 +1860,7 @@
                 const current = parseInt(display.textContent) - 1;
                 display.textContent = current;
                 
-                if (current <= 5 && current > 0) {
-                    speak(current.toString());
-                }
+                if (current <= 5 && current > 0) speak(current.toString());
                 
                 if (current <= 0) {
                     clearInterval(App.timers.countdown);
@@ -1966,12 +1872,7 @@
 
         // ==================== SISTEMA DE GANADOR AUTOMÁTICO ====================
         function scheduleAutoWinnerCheck() {
-            // Limpiar timer anterior si existe
-            if (App.timers.autoWinner) {
-                clearTimeout(App.timers.autoWinner);
-            }
-            
-            // Solo proceder si el juego está activo y no pausado
+            if (App.timers.autoWinner) clearTimeout(App.timers.autoWinner);
             if (!App.gameState.active || App.gameState.paused) return;
             
             App.timers.autoWinner = setTimeout(() => {
@@ -1981,48 +1882,30 @@
 
         async function checkAndAssignAutoWinner() {
             if (!App.gameState.active || App.gameState.paused) return;
+            if (App.gameState.claimedLines >= CONFIG.MAX_LINE_WINNERS && App.gameState.bingoClaimed) return;
+            if (App.gameState.noLineMode && App.gameState.bingoClaimed) return;
             
-            // Verificar si ya hay ganadores completos
-            if (App.gameState.claimedLines >= CONFIG.MAX_LINE_WINNERS && App.gameState.bingoClaimed) {
-                return; // Juego completado
-            }
-            
-            // Si está en modo sin línea y ya hay bingo, terminar
-            if (App.gameState.noLineMode && App.gameState.bingoClaimed) {
-                return;
-            }
-            
-            // Obtener jugadores activos con cartones
             const playersSnapshot = await database.ref('players').once('value');
             const players = playersSnapshot.val() || {};
             const activePlayers = Object.values(players).filter(p => p.online && p.cards > 0);
             
             if (activePlayers.length === 0) return;
             
-            // Seleccionar jugador aleatorio
             const randomPlayer = activePlayers[Math.floor(Math.random() * activePlayers.length)];
-            
-            // Generar ID de cartón aleatorio
             const cardId = Math.random().toString(36).substring(2, 6).toUpperCase();
             
-            // Determinar si es línea o bingo
             let isLine = false;
             let isBingo = false;
             
             if (App.gameState.noLineMode) {
-                // Solo bingo en modo sin línea
                 isBingo = !App.gameState.bingoClaimed && Math.random() > 0.3;
             } else {
-                // Ambos modos
                 isLine = App.gameState.claimedLines < CONFIG.MAX_LINE_WINNERS && Math.random() > 0.3;
                 isBingo = !App.gameState.bingoClaimed && !isLine;
             }
             
-            if (isLine) {
-                await assignAutoLineWinner(randomPlayer.name, cardId);
-            } else if (isBingo) {
-                await assignAutoBingoWinner(randomPlayer.name, cardId);
-            }
+            if (isLine) await assignAutoLineWinner(randomPlayer.name, cardId);
+            else if (isBingo) await assignAutoBingoWinner(randomPlayer.name, cardId);
         }
 
         async function assignAutoLineWinner(playerName, cardId) {
@@ -2043,11 +1926,9 @@
             await database.ref(`winners/line/${Date.now()}`).set(winnerData);
             await database.ref('currentWinner').set(winnerData);
             
-            // Actualizar pozo
             const newAmount = App.gameState.prize.amount - prizeAmount;
             await database.ref('gameState/prize/amount').set(newAmount);
             
-            // Notificar a todos
             await database.ref('chat').push({
                 text: `🤖 GANADOR AUTOMÁTICO DE LÍNEA: ${playerName} con cartón ${cardId} - Premio: ${formatMoney(prizeAmount)}`,
                 author: 'Sistema',
@@ -2057,7 +1938,6 @@
             
             speak(`¡Línea automática! ${playerName} ha ganado ${prizeAmount} pesos con el cartón ${cardId}`, true);
             logToConsole(`🤖 AUTO LÍNEA: ${playerName} - ${cardId} - ${formatMoney(prizeAmount)}`, 'winner');
-            
             pauseGame();
         }
 
@@ -2078,11 +1958,9 @@
             await database.ref('winners/bingo').set(winnerData);
             await database.ref('currentWinner').set(winnerData);
             
-            // Actualizar pozo
             const newAmount = App.gameState.prize.amount - prizeAmount;
             await database.ref('gameState/prize/amount').set(newAmount);
             
-            // Notificar a todos
             await database.ref('chat').push({
                 text: `🤖 GANADOR AUTOMÁTICO DE BINGO: ${playerName} con cartón ${cardId} - Premio: ${formatMoney(prizeAmount)}`,
                 author: 'Sistema',
@@ -2092,7 +1970,6 @@
             
             speak(`¡Bingo automático! ${playerName} ha ganado ${prizeAmount} pesos con el cartón ${cardId}. ¡Felicitaciones!`, true);
             logToConsole(`🤖 AUTO BINGO: ${playerName} - ${cardId} - ${formatMoney(prizeAmount)}`, 'winner');
-            
             pauseGame();
         }
 
@@ -2102,13 +1979,11 @@
             $('playerAvatar').textContent = App.user.name.charAt(0).toUpperCase();
             updateCoinsDisplay();
             updatePlayerCount();
+            
+            // Inicializar chat
             renderChat();
             
-            if (App.calledNumbers.length > 0) {
-                updateGameDisplay();
-            }
-            
-            // Actualizar estado de botones
+            if (App.calledNumbers.length > 0) updateGameDisplay();
             updateClaimButtons();
         }
 
@@ -2185,7 +2060,6 @@
                 database.ref(`players/${App.user.id}/cards`).set(App.myCards.length);
             }
             
-            // Verificar si ya tiene línea o bingo
             checkPlayerWinStatus();
         }
 
@@ -2255,20 +2129,12 @@
             const card = App.myCards[cardIdx];
             const number = parseInt(num);
             
-            // Verificar si el juego está terminado
             if (App.gameState.claimedLines >= CONFIG.MAX_LINE_WINNERS && App.gameState.bingoClaimed) {
                 showToast('El juego ha terminado. Ya hay ganadores.', 'error');
                 return;
             }
             
-            // Si es modo sin línea, no permitir cantar línea
-            if (App.gameState.noLineMode && App.hasLine && !App.hasBingo) {
-                // Solo permitir si es para bingo completo
-            }
-            
-            // Verificar si el número ya salió
             if (!App.calledNumbers.includes(number) && !App.settings.autoMark) {
-                // Mostrar error visual
                 card.hasError[row][col] = true;
                 renderCards();
                 setTimeout(() => {
@@ -2279,55 +2145,41 @@
                 return;
             }
             
-            // Marcar/desmarcar
             card.marked[row][col] = !card.marked[row][col];
             renderCards();
             
-            if (card.marked[row][col]) {
-                checkPlayerWinStatus();
-            }
+            if (card.marked[row][col]) checkPlayerWinStatus();
         }
 
         // ==================== VERIFICACIÓN DE VICTORIA DEL JUGADOR ====================
         function checkPlayerWinStatus() {
-            if (App.myCards.length === 0) return;
+            if (App.myCards.length === 0) {
+                App.hasLine = false;
+                App.hasBingo = false;
+                updateClaimButtons();
+                return;
+            }
             
             App.hasLine = false;
             App.hasBingo = false;
-            let winningCard = null;
             
             for (const card of App.myCards) {
                 // Verificar líneas horizontales
                 for (let i = 0; i < 5; i++) {
-                    if (card.marked[i].every(m => m)) {
-                        App.hasLine = true;
-                        winningCard = card;
-                    }
+                    if (card.marked[i].every(m => m)) App.hasLine = true;
                 }
                 
                 // Verificar líneas verticales
                 for (let i = 0; i < 5; i++) {
-                    if (card.marked.every(r => r[i])) {
-                        App.hasLine = true;
-                        winningCard = card;
-                    }
+                    if (card.marked.every(r => r[i])) App.hasLine = true;
                 }
                 
                 // Verificar diagonales
-                if ([0,1,2,3,4].every(i => card.marked[i][i])) {
-                    App.hasLine = true;
-                    winningCard = card;
-                }
-                if ([0,1,2,3,4].every(i => card.marked[i][4-i])) {
-                    App.hasLine = true;
-                    winningCard = card;
-                }
+                if ([0,1,2,3,4].every(i => card.marked[i][i])) App.hasLine = true;
+                if ([0,1,2,3,4].every(i => card.marked[i][4-i])) App.hasLine = true;
                 
                 // Verificar bingo completo
-                if (card.marked.every(r => r.every(m => m))) {
-                    App.hasBingo = true;
-                    winningCard = card;
-                }
+                if (card.marked.every(r => r.every(m => m))) App.hasBingo = true;
             }
             
             updateClaimButtons();
@@ -2339,7 +2191,6 @@
             
             if (!lineBtn || !bingoBtn) return;
             
-            // Verificar límites de ganadores
             const canClaimLine = App.hasLine && 
                                 App.gameState.claimedLines < CONFIG.MAX_LINE_WINNERS && 
                                 !App.gameState.noLineMode;
@@ -2348,24 +2199,16 @@
             lineBtn.disabled = !canClaimLine;
             bingoBtn.disabled = !canClaimBingo;
             
-            // Agregar animación si están habilitados
-            if (canClaimLine) {
-                lineBtn.classList.add('pulse');
-            } else {
-                lineBtn.classList.remove('pulse');
-            }
+            if (canClaimLine) lineBtn.classList.add('pulse');
+            else lineBtn.classList.remove('pulse');
             
-            if (canClaimBingo) {
-                bingoBtn.classList.add('pulse');
-            } else {
-                bingoBtn.classList.remove('pulse');
-            }
+            if (canClaimBingo) bingoBtn.classList.add('pulse');
+            else bingoBtn.classList.remove('pulse');
         }
 
         async function claimLine() {
             if (!App.hasLine || App.gameState.claimedLines >= CONFIG.MAX_LINE_WINNERS) return;
             
-            // Encontrar el cartón ganador
             let winningCard = null;
             for (const card of App.myCards) {
                 for (let i = 0; i < 5; i++) {
@@ -2379,7 +2222,6 @@
             
             if (!winningCard) return;
             
-            // Enviar solicitud de línea
             await database.ref('potentialWinners').push({
                 player: App.user.name,
                 playerId: App.user.id,
@@ -2393,15 +2235,12 @@
             
             showToast('📏 ¡Línea cantada! Esperando confirmación...', 'success', 5000);
             speak('He cantado línea. Esperando confirmación del administrador.');
-            
-            // Desactivar botón temporalmente
             $('claimLineBtn').disabled = true;
         }
 
         async function claimBingo() {
             if (!App.hasBingo || App.gameState.bingoClaimed) return;
             
-            // Encontrar el cartón ganador
             let winningCard = null;
             for (const card of App.myCards) {
                 if (card.marked.every(r => r.every(m => m))) {
@@ -2412,7 +2251,6 @@
             
             if (!winningCard) return;
             
-            // Enviar solicitud de bingo
             await database.ref('potentialWinners').push({
                 player: App.user.name,
                 playerId: App.user.id,
@@ -2426,8 +2264,6 @@
             
             showToast('🎱 ¡Bingo cantado! Esperando confirmación...', 'success', 5000);
             speak('He cantado bingo. Esperando confirmación del administrador.');
-            
-            // Desactivar botón temporalmente
             $('claimBingoBtn').disabled = true;
         }
 
@@ -2446,7 +2282,6 @@
             if (App.settings.voice) {
                 speak('Sistema de voz activado');
             } else {
-                // Cancelar cualquier voz pendiente
                 if (synth) synth.cancel();
                 App.speechQueue = [];
                 App.isSpeaking = false;
@@ -2464,9 +2299,7 @@
                         }
                     });
                 });
-                if (changed) {
-                    renderCards();
-                }
+                if (changed) renderCards();
             });
             checkPlayerWinStatus();
         }
@@ -2480,7 +2313,7 @@
             showToast('💰 Solicitud enviada al administrador');
         }
 
-        // ==================== CHAT MEJORADO CON SOPORTE PRIVADO ====================
+        // ==================== CHAT - CORREGIDO ====================
         function switchChatTab(tab) {
             App.chatMode = tab;
             document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
@@ -2488,7 +2321,7 @@
             renderChat();
         }
 
-        async function addChatMessage(text, author, isAdmin=false, isSystem=false, isPrivate=false, playerCoins=null, isBroadcast=false, targetPlayer=null) {
+        function addChatMessage(text, author, isAdmin=false, isSystem=false, isPrivate=false, playerCoins=null, isBroadcast=false, targetPlayer=null) {
             const isMyMessage = author === 'Tú' || (App.isAdmin && author === 'Admin');
             const isMyAdminMessage = App.isAdmin && isMyMessage && isBroadcast;
             
@@ -2502,7 +2335,7 @@
                 isBroadcast,
                 isMyAdminMessage,
                 targetPlayer,
-                playerCoins: playerCoins || (author === 'Tú' ? App.user.coins : null),
+                playerCoins: playerCoins || (author === 'Tú' ? App.user?.coins : null),
                 time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
                 timestamp: Date.now()
             };
@@ -2512,7 +2345,7 @@
             
             renderChat();
             
-            if (isPrivate && !App.isAdmin && author !== 'Tú' && targetPlayer === App.user.name) {
+            if (isPrivate && !App.isAdmin && author !== 'Tú' && targetPlayer === App.user?.name) {
                 showToast('📩 Mensaje privado del Admin', 'info');
             }
         }
@@ -2524,8 +2357,13 @@
             const filtered = App.chat.filter(m => {
                 if (m.isSystem) return true;
                 if (App.chatMode === 'private') return m.isPrivate || m.isAdmin;
-                return !m.isPrivate || m.author === 'Tú' || m.isAdmin || m.targetPlayer === App.user.name;
+                return !m.isPrivate || m.author === 'Tú' || m.isAdmin || m.targetPlayer === App.user?.name;
             });
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:20px;opacity:0.5">No hay mensajes aún</div>';
+                return;
+            }
             
             container.innerHTML = filtered.map(m => {
                 let messageClass = 'message';
@@ -2572,13 +2410,12 @@
         async function sendMessage() {
             const input = $('chatInput');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text || !App.user) return;
             
             const isPrivate = App.chatMode === 'private' && !App.isAdmin;
             const author = App.isAdmin ? 'Admin' : App.user.name;
             const isBroadcast = App.isAdmin && !isPrivate;
             
-            // Para admin, verificar si es mensaje privado
             let targetPlayer = null;
             if (App.isAdmin && $('msgTarget').value === 'private') {
                 targetPlayer = $('privateTarget').value;
@@ -2598,11 +2435,8 @@
                 timestamp: Date.now()
             });
             
-            if (isBroadcast && App.settings.voice) {
-                speak(`Mensaje enviado: ${text}`);
-            } else if (targetPlayer && App.settings.voice) {
-                speak(`Mensaje privado enviado a ${targetPlayer}`);
-            }
+            if (isBroadcast && App.settings.voice) speak(`Mensaje enviado: ${text}`);
+            else if (targetPlayer && App.settings.voice) speak(`Mensaje privado enviado a ${targetPlayer}`);
         }
 
         async function clearAllChats() {
@@ -2635,7 +2469,6 @@
             updateAdminDisplay();
             updateWinnerDisplays();
             
-            // Cargar estado de ganador automático
             const autoWinnerCheckbox = $('autoWinnerEnabled');
             if (autoWinnerCheckbox) {
                 autoWinnerCheckbox.checked = App.gameState.autoWinnerEnabled;
@@ -2645,7 +2478,6 @@
                 });
             }
             
-            // Cargar estado de modo sin línea
             const noLineCheckbox = $('noLineMode');
             if (noLineCheckbox) {
                 noLineCheckbox.checked = App.gameState.noLineMode || false;
@@ -2793,9 +2625,7 @@
                 if (lineSection) lineSection.style.opacity = '1';
                 if (claimButtons) {
                     const lineBtn = $('claimLineBtn');
-                    if (lineBtn) {
-                        lineBtn.textContent = '📏 CANTAR LÍNEA';
-                    }
+                    if (lineBtn) lineBtn.textContent = '📏 CANTAR LÍNEA';
                 }
             }
         }
@@ -2923,10 +2753,7 @@
                 return;
             }
             
-            // Cancelar ganador automático si existe
-            if (App.timers.autoWinner) {
-                clearTimeout(App.timers.autoWinner);
-            }
+            if (App.timers.autoWinner) clearTimeout(App.timers.autoWinner);
             
             const linePct = App.gameState.prizePercentages?.line || CONFIG.LINE_PERCENTAGE;
             const prizeAmount = Math.floor(App.gameState.prize.amount * linePct / 100 / CONFIG.MAX_LINE_WINNERS);
@@ -2977,10 +2804,7 @@
                 return;
             }
             
-            // Cancelar ganador automático si existe
-            if (App.timers.autoWinner) {
-                clearTimeout(App.timers.autoWinner);
-            }
+            if (App.timers.autoWinner) clearTimeout(App.timers.autoWinner);
             
             const bingoPct = App.gameState.prizePercentages?.bingo || CONFIG.BINGO_PERCENTAGE;
             const prizeAmount = Math.floor(App.gameState.prize.amount * bingoPct / 100);
@@ -3013,7 +2837,7 @@
 
         function simulateLineLogic() {
             showToast('Simulando lógica de línea...', 'info');
-            speak('Simulación de línea completada. Revisa la lista de potenciales ganadores.');
+            speak('Simulación de línea completada.');
         }
 
         function simulateBingoLogic() {
@@ -3073,7 +2897,6 @@
         }
 
         async function startGame() {
-            // Resetear ganadores al iniciar nuevo juego
             await database.ref('winners').remove();
             await database.ref('currentWinner').remove();
             App.gameState.lineWinners = [];
@@ -3103,9 +2926,7 @@
                 clearInterval(App.timers.game);
                 App.timers.game = null;
             }
-            if (App.timers.autoWinner) {
-                clearTimeout(App.timers.autoWinner);
-            }
+            if (App.timers.autoWinner) clearTimeout(App.timers.autoWinner);
             if ($('btnStart')) $('btnStart').disabled = false;
             showToast('⏸ Juego pausado', 'info');
             speak('Juego pausado');
@@ -3116,14 +2937,12 @@
         async function resetGame() {
             pauseGame();
             
-            // Limpiar números y estado
             await database.ref('calledNumbers').remove();
             await database.ref('gameState/currentNumber').set(null);
             await database.ref('potentialWinners').remove();
             await database.ref('winners').remove();
             await database.ref('currentWinner').remove();
             
-            // IMPORTANTE: Limpiar cartones de TODOS los jugadores
             const playersSnapshot = await database.ref('players').once('value');
             const players = playersSnapshot.val() || {};
             
@@ -3132,7 +2951,6 @@
                 updates[`players/${playerId}/cards`] = 0;
             });
             
-            // También limpiar cartones del admin si existe
             const adminsSnapshot = await database.ref('admins').once('value');
             const admins = adminsSnapshot.val() || {};
             Object.keys(admins).forEach(adminId => {
@@ -3141,13 +2959,11 @@
             
             await database.ref().update(updates);
             
-            // Notificar a todos los jugadores que deben reiniciar
             await database.ref('gameReset').set({
                 timestamp: Date.now(),
                 message: 'Juego reiniciado. Compra nuevos cartones.'
             });
             
-            // Limpiar cartones locales
             App.myCards = [];
             App.hasLine = false;
             App.hasBingo = false;
@@ -3254,11 +3070,8 @@
                 timestamp: Date.now()
             });
             
-            if (isPrivate && privateTarget) {
-                speak(`Mensaje privado enviado a ${privateTarget}`);
-            } else {
-                speak(`Mensaje para todos: ${text}`);
-            }
+            if (isPrivate && privateTarget) speak(`Mensaje privado enviado a ${privateTarget}`);
+            else speak(`Mensaje para todos: ${text}`);
             
             showToast(isPrivate ? `Mensaje privado enviado a ${privateTarget}` : 'Mensaje enviado a todos');
         }
@@ -3356,7 +3169,7 @@
             $('winnerName').textContent = winner.player;
             $('winnerPrize').textContent = `Premio: ${winner.prize}${winner.cardId ? ` (Cartón: ${winner.cardId})` : ''}`;
             
-            const pctEl = $('winnerPercentage');
+            const pctEl = $('winnerPercentageDisplay');
             if (winner.type === 'line') {
                 pctEl.textContent = `${App.gameState.prizePercentages?.line || CONFIG.LINE_PERCENTAGE}% del pozo`;
                 pctEl.classList.remove('hidden');
@@ -3369,7 +3182,8 @@
         }
 
         function closeWinnerModal() {
-            $('winnerModal').classList.remove('active');
+            const modal = $('winnerModal');
+            if (modal) modal.classList.remove('active');
             document.querySelectorAll('.winner').forEach(el => el.classList.remove('winner'));
         }
 
@@ -3377,14 +3191,12 @@
         window.addEventListener('load', () => {
             App.chat = [];
             
-            // Cargar voces disponibles
-            if (synth) {
-                synth.getVoices();
-            }
+            if (synth) synth.getVoices();
             
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && $('winnerModal').classList.contains('active')) {
+                if (e.key === 'Escape') {
                     closeWinnerModal();
+                    closeWelcomeMessage();
                 }
             });
             
@@ -3405,7 +3217,7 @@
             });
         });
 
-        // Exponer funciones necesarias globalmente
+        // Exponer funciones globalmente
         window.setLoginMode = setLoginMode;
         window.moveCodeInput = moveCodeInput;
         window.handleCodeBackspace = handleCodeBackspace;
