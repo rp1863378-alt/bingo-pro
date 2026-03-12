@@ -352,7 +352,7 @@
         .bingo-winner-section{background:rgba(253,203,110,0.1);border:2px solid var(--accent);border-radius:15px;padding:20px;margin-top:15px}
         .bingo-winner-section h4{color:var(--accent);margin-bottom:15px;font-size:1rem}
         
-        /* Modal - CORREGIDO */
+        /* Modal - CORREGIDO CON BOTÓN DE CERRAR */
         .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(10px)}
         .modal-overlay.active{display:flex}
         .modal-content{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:30px;padding:40px;max-width:500px;width:100%;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,0.6);position:relative;overflow:hidden;animation:modalIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);z-index:10000}
@@ -610,7 +610,7 @@
             margin-bottom: 5px;
         }
 
-        /* Console Log Display */
+        /* Console Log Display - CON BOTÓN X */
         .console-log {
             position: fixed;
             bottom: 80px;
@@ -625,6 +625,35 @@
             border: 2px solid var(--accent);
             font-family: 'Courier New', monospace;
             font-size: 0.85rem;
+        }
+
+        .console-log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .console-log-close {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .console-log-close:hover {
+            background: #c0392b;
+            transform: scale(1.1);
         }
 
         .console-log-entry {
@@ -642,6 +671,77 @@
         .console-log-entry.error {
             background: rgba(231, 76, 60, 0.3);
             border-left: 3px solid var(--danger);
+        }
+
+        /* Admin Winner Display - NUEVO */
+        .admin-winner-display {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+            z-index: 6000;
+            text-align: center;
+            min-width: 400px;
+            max-width: 90%;
+            animation: winnerDisplayPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid var(--accent);
+        }
+
+        @keyframes winnerDisplayPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .admin-winner-display h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        .admin-winner-display .winner-info {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .admin-winner-display .winner-name {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .admin-winner-display .card-number {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .admin-winner-display .prize-amount {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent);
+            text-shadow: 0 0 30px rgba(253,203,110,0.8);
+        }
+
+        .admin-winner-display .btn {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+        }
+
+        .admin-winner-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 5999;
+            backdrop-filter: blur(5px);
         }
     </style>
 </head>
@@ -705,7 +805,7 @@
                         🎨 3 Estilos de Cartón Disponibles<br>
                         👥 Sala compartida con todos los jugadores
                     </div>
-                    <div style="margin-top:10px;opacity:0.5;font-size:0.8rem">v9.0 Firebase Live - Juego Responsable</div>
+                    <div style="margin-top:10px;opacity:0.5;font-size:0.8rem">v10.0 Firebase Live - Juego Responsable</div>
                 </div>
             </div>
         </div>
@@ -1043,9 +1143,12 @@
             </div>
         </div>
 
-        <!-- Console Log para Admin -->
+        <!-- Console Log para Admin - CON BOTÓN X -->
         <div class="console-log" id="adminConsole">
-            <div style="font-weight:700;margin-bottom:10px;color:var(--accent)">📋 Consola de Eventos</div>
+            <div class="console-log-header">
+                <div style="font-weight:700;color:var(--accent)">📋 Consola de Eventos</div>
+                <button class="console-log-close" onclick="clearConsole()" title="Borrar consola">×</button>
+            </div>
             <div id="consoleContent"></div>
         </div>
     </div>
@@ -1061,6 +1164,18 @@
             <div id="winnerPercentageDisplay" class="winner-percentage hidden"></div>
             <button class="btn btn-primary modal-btn" onclick="closeWinnerModal()">Continuar Juego</button>
         </div>
+    </div>
+
+    <!-- Admin Winner Display - NUEVO -->
+    <div id="adminWinnerOverlay" class="admin-winner-overlay hidden" onclick="if(event.target === this) closeAdminWinnerDisplay()"></div>
+    <div id="adminWinnerDisplay" class="admin-winner-display hidden">
+        <h2 id="adminWinnerTitle">🏆 ¡GANADOR!</h2>
+        <div class="winner-info">
+            <div class="winner-name" id="adminWinnerName">Jugador</div>
+            <div class="card-number" id="adminWinnerCard">Cartón: ----</div>
+            <div class="prize-amount" id="adminWinnerPrize">$0</div>
+        </div>
+        <button class="btn btn-primary" onclick="closeAdminWinnerDisplay()">✅ OK - Continuar Juego</button>
     </div>
 
     <!-- Countdown Overlay -->
@@ -1148,7 +1263,8 @@
             hasLine: false,
             hasBingo: false,
             consoleLogs: [],
-            chatInitialized: false
+            chatInitialized: false,
+            voiceInitialized: false
         };
 
         let synth = window.speechSynthesis;
@@ -1158,13 +1274,22 @@
             if (!App.audioContext) {
                 App.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
-            if (synth) {
-                synth.cancel();
+            if (!App.voiceInitialized) {
+                App.voiceInitialized = true;
+                // Cargar voces disponibles
+                if (synth) {
+                    synth.getVoices();
+                }
             }
         }
 
         function speak(text, priority = false) {
             if (!App.settings.voice || !synth) return;
+            
+            // Inicializar audio en primera interacción
+            if (!App.voiceInitialized) {
+                initAudio();
+            }
             
             if (priority) {
                 synth.cancel();
@@ -1305,6 +1430,12 @@
                 </div>
             `).join('');
             consoleContent.scrollTop = consoleContent.scrollHeight;
+        }
+
+        function clearConsole() {
+            App.consoleLogs = [];
+            updateConsoleDisplay();
+            showToast('🗑 Consola borrada', 'info');
         }
 
         // ==================== SISTEMA DE LOGIN ====================
@@ -1487,6 +1618,9 @@
             });
             
             startOfflineCleanup();
+            
+            // Anunciar entrada del admin
+            speak('Modo administrador activado. Bienvenido al panel de control.', true);
         }
 
         async function loginAsPremium(name, code) {
@@ -1680,6 +1814,9 @@
                     if (state.lineWinners && state.lineWinners.length > oldLineWinners) {
                         const newWinner = state.lineWinners[state.lineWinners.length - 1];
                         showWinnerModal(newWinner);
+                        if (App.isAdmin) {
+                            showAdminWinnerDisplay(newWinner);
+                        }
                         speak(`¡Línea! ${newWinner.player} ha ganado ${newWinner.prize}`, true);
                         logToConsole(`🏆 LÍNEA: ${newWinner.player} - Cartón ${newWinner.cardId} - ${newWinner.prize}`, 'winner');
                         pauseGame();
@@ -1687,6 +1824,9 @@
                     
                     if (state.bingoWinner && !oldBingoWinner) {
                         showWinnerModal(state.bingoWinner);
+                        if (App.isAdmin) {
+                            showAdminWinnerDisplay(state.bingoWinner);
+                        }
                         speak(`¡Bingo! ${state.bingoWinner.player} ha ganado ${state.bingoWinner.prize}`, true);
                         logToConsole(`🏆 BINGO: ${state.bingoWinner.player} - Cartón ${state.bingoWinner.cardId} - ${state.bingoWinner.prize}`, 'winner');
                         pauseGame();
@@ -1712,14 +1852,14 @@
                 }
             });
 
-            // CHAT - CORREGIDO
+            // CHAT - CORREGIDO: Solo escuchar mensajes nuevos
             if (!App.chatInitialized) {
                 App.chatInitialized = true;
                 database.ref('chat').limitToLast(50).on('child_added', (snapshot) => {
                     const msg = snapshot.val();
                     if (!msg) return;
                     
-                    // Evitar duplicados
+                    // Evitar duplicados verificando timestamp y contenido
                     const exists = App.chat.find(m => 
                         m.timestamp === msg.timestamp && 
                         m.author === msg.author && 
@@ -1738,6 +1878,7 @@
                             msg.targetPlayer
                         );
                         
+                        // Anunciar mensajes importantes
                         if (msg.isBroadcast && msg.isAdmin && !App.isAdmin) {
                             speak(`Mensaje del administrador: ${msg.text}`);
                         }
@@ -1803,18 +1944,11 @@
                 });
             }
 
-            // Escuchar reset de juego
+            // Escuchar reset de juego - CORREGIDO
             database.ref('gameReset').on('value', (snapshot) => {
                 const reset = snapshot.val();
                 if (reset && reset.timestamp > Date.now() - 5000) {
-                    App.myCards = [];
-                    App.hasLine = false;
-                    App.hasBingo = false;
-                    renderCards();
-                    updateClaimButtons();
-                    showToast('🔄 Juego reiniciado. Compra nuevos cartones.', 'info');
-                    speak('El juego ha sido reiniciado. Compra nuevos cartones para continuar jugando.');
-                    logToConsole('🔄 Juego reiniciado', 'info');
+                    handleGameReset();
                 }
             });
 
@@ -1824,6 +1958,30 @@
                 App.gameState.noLineMode = noLineMode || false;
                 updateNoLineModeDisplay();
             });
+        }
+
+        function handleGameReset() {
+            // Limpiar cartones locales
+            App.myCards = [];
+            App.hasLine = false;
+            App.hasBingo = false;
+            
+            // Actualizar UI
+            renderCards();
+            updateClaimButtons();
+            
+            // Mostrar mensaje
+            showToast('🔄 Juego reiniciado. Compra nuevos cartones.', 'info');
+            
+            // Anunciar con voz
+            speak('¡Nueva partida! El juego ha sido reiniciado. Todos los cartones han sido eliminados. Por favor, compren nuevos cartones para continuar jugando.', true);
+            
+            logToConsole('🔄 Juego reiniciado - Todos los cartones eliminados', 'info');
+            
+            // Limpiar chat si es admin
+            if (App.isAdmin) {
+                clearAllChats();
+            }
         }
 
         function updateConnectionStatus(status) {
@@ -2054,6 +2212,9 @@
             updateCoinsDisplay();
             renderCards();
             showToast(`🎫 Cartón #${App.myCards.length} comprado - ID: ${newCard.id}`);
+            
+            // Anunciar compra con voz
+            speak(`Cartón ${newCard.id} comprado. ¡Buena suerte!`);
             
             if (!App.isAdmin) {
                 database.ref(`players/${App.user.id}/coins`).set(App.user.coins);
@@ -2775,6 +2936,9 @@
             const newAmount = App.gameState.prize.amount - prizeAmount;
             await database.ref('gameState/prize/amount').set(newAmount);
             
+            // Mostrar en pantalla del admin
+            showAdminWinnerDisplay(winnerData);
+            
             showWinnerModal(winnerData);
             speak(`¡Línea! ${player} ha ganado ${prizeAmount} pesos con el cartón ${cardId}`, true);
             logToConsole(`🏆 LÍNEA MANUAL: ${player} - ${cardId} - ${formatMoney(prizeAmount)}`, 'winner');
@@ -2825,6 +2989,9 @@
             const newAmount = App.gameState.prize.amount - prizeAmount;
             await database.ref('gameState/prize/amount').set(newAmount);
             
+            // Mostrar en pantalla del admin
+            showAdminWinnerDisplay(winnerData);
+            
             showWinnerModal(winnerData);
             speak(`¡Bingo! ${player} ha ganado ${prizeAmount} pesos con el cartón ${cardId}. ¡Felicitaciones!`, true);
             logToConsole(`🏆 BINGO MANUAL: ${player} - ${cardId} - ${formatMoney(prizeAmount)}`, 'winner');
@@ -2833,6 +3000,39 @@
             
             $('bingoWinnerSelect').value = '';
             $('bingoCardNumber').value = '';
+        }
+
+        // NUEVO: Mostrar ganador en pantalla del admin
+        function showAdminWinnerDisplay(winner) {
+            const overlay = $('adminWinnerOverlay');
+            const display = $('adminWinnerDisplay');
+            
+            if (!overlay || !display) return;
+            
+            $('adminWinnerTitle').textContent = winner.type === 'line' ? '📏 ¡GANADOR DE LÍNEA!' : '🎱 ¡GANADOR DE BINGO!';
+            $('adminWinnerName').textContent = winner.player;
+            $('adminWinnerCard').textContent = `Cartón: ${winner.cardId}`;
+            $('adminWinnerPrize').textContent = winner.prize;
+            
+            overlay.classList.remove('hidden');
+            display.classList.remove('hidden');
+            
+            // Anunciar con voz
+            const typeText = winner.type === 'line' ? 'línea' : 'bingo';
+            speak(`¡Atención! Tenemos ganador de ${typeText}. ${winner.player} ha ganado ${winner.prize} con el cartón ${winner.cardId}. Presiona OK para continuar.`, true);
+        }
+
+        function closeAdminWinnerDisplay() {
+            const overlay = $('adminWinnerOverlay');
+            const display = $('adminWinnerDisplay');
+            
+            if (overlay) overlay.classList.add('hidden');
+            if (display) display.classList.add('hidden');
+            
+            // Reanudar juego si estaba pausado
+            if (App.gameState.paused) {
+                startGame();
+            }
         }
 
         function simulateLineLogic() {
@@ -2897,6 +3097,7 @@
         }
 
         async function startGame() {
+            // Limpiar ganadores anteriores
             await database.ref('winners').remove();
             await database.ref('currentWinner').remove();
             App.gameState.lineWinners = [];
@@ -2937,12 +3138,15 @@
         async function resetGame() {
             pauseGame();
             
+            // Limpiar todos los datos del juego
             await database.ref('calledNumbers').remove();
             await database.ref('gameState/currentNumber').set(null);
             await database.ref('potentialWinners').remove();
             await database.ref('winners').remove();
             await database.ref('currentWinner').remove();
+            await database.ref('chat').remove(); // Borrar mensajes
             
+            // Limpiar cartones de todos los jugadores
             const playersSnapshot = await database.ref('players').once('value');
             const players = playersSnapshot.val() || {};
             
@@ -2951,6 +3155,7 @@
                 updates[`players/${playerId}/cards`] = 0;
             });
             
+            // También limpiar cartones de admins
             const adminsSnapshot = await database.ref('admins').once('value');
             const admins = adminsSnapshot.val() || {};
             Object.keys(admins).forEach(adminId => {
@@ -2959,16 +3164,23 @@
             
             await database.ref().update(updates);
             
+            // Notificar reset
             await database.ref('gameReset').set({
                 timestamp: Date.now(),
                 message: 'Juego reiniciado. Compra nuevos cartones.'
             });
             
+            // Limpiar localmente
             App.myCards = [];
             App.hasLine = false;
             App.hasBingo = false;
+            App.chat = []; // Limpiar chat local
+            App.consoleLogs = []; // Limpiar consola
+            
             renderCards();
             updateClaimButtons();
+            renderChat();
+            updateConsoleDisplay();
             
             App.calledNumbers = [];
             App.gameState.currentNumber = null;
@@ -2985,9 +3197,10 @@
             
             updateGameDisplay();
             updateWinnerDisplays();
-            showToast('🔄 Juego reiniciado. Todos los cartones han sido eliminados.');
-            speak('Juego reiniciado. Todos los jugadores deben comprar nuevos cartones.');
-            logToConsole('🔄 Juego reiniciado - Todos los cartones eliminados', 'info');
+            
+            showToast('🔄 Juego reiniciado. Todos los cartones eliminados y chat borrado.');
+            speak('¡Nueva partida! El juego ha sido reiniciado. Todos los cartones han sido eliminados y el chat ha sido borrado. Por favor, compren nuevos cartones para continuar jugando.', true);
+            logToConsole('🔄 Juego reiniciado - Cartones eliminados, chat borrado', 'info');
         }
 
         async function generateRandomNumber() {
@@ -3197,6 +3410,7 @@
                 if (e.key === 'Escape') {
                     closeWinnerModal();
                     closeWelcomeMessage();
+                    closeAdminWinnerDisplay();
                 }
             });
             
@@ -3215,6 +3429,13 @@
                     }
                 }
             });
+            
+            // Inicializar audio en primera interacción del usuario
+            document.addEventListener('click', () => {
+                if (!App.voiceInitialized) {
+                    initAudio();
+                }
+            }, { once: true });
         });
 
         // Exponer funciones globalmente
@@ -3258,6 +3479,8 @@
         window.closeWelcomeMessage = closeWelcomeMessage;
         window.refreshPlayerList = refreshPlayerList;
         window.toggleNoLineMode = toggleNoLineMode;
+        window.clearConsole = clearConsole;
+        window.closeAdminWinnerDisplay = closeAdminWinnerDisplay;
     </script>
 </body>
 </html>
